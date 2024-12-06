@@ -2,7 +2,7 @@
 
 Submission for McMaster University COMPSCI 4AL3 Group Project Milestone 2.
 
-Authors: Alex Eckardt (alexeckardt, eckardta), Wyatt Habinski (habinksi, habinskw), Eric Zhou (ericzz12, zhoue16)
+Authors: Alex Eckardt (alexeckardt, eckardta), Wyatt Habinski (whabinski, habinskw), Eric Zhou (ericzz12, zhoue16)
 
 ## To Run
 
