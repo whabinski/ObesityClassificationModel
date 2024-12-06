@@ -8,16 +8,11 @@ from Scripts.preprocess_data import preprocess_features
 
 # function to load data, seperate features and labels, and split into training and testing sets
 def load_and_split(data_path):
-
     data = load_data(data_path)                                                                                 # load raw csv data
     features, labels = create_feature_and_target(data)                                                          # seperate features and labels
     train_features, test_features, train_labels, test_labels = split_data(features, labels, test_size=0.2)      # split into train and test sets
     return train_features, test_features, train_labels, test_labels
 
-# function to preprocess train and test sets
-def preprocess(train_features, test_features, train_labels, test_labels):
-    train_features_processed, test_features_processed, train_labels_encoded, test_labels_encoded = preprocess_features(train_features, test_features, train_labels, test_labels)
-    return train_features_processed, test_features_processed, train_labels_encoded, test_labels_encoded
 
 # main
 def main():
@@ -27,7 +22,7 @@ def main():
     print("Data successfully split into training and testing sets.")
     
     # preprocess traina nd test sets
-    train_features_processed, test_features_processed, train_labels_processed, test_labels_processed = preprocess(train_features, test_features, train_labels, test_labels)
+    train_features_processed, test_features_processed, train_labels_processed, test_labels_processed = preprocess_features(train_features, test_features, train_labels, test_labels)
     print("Data successfully processed.")
     
     # Initivalize Models
