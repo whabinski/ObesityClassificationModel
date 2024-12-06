@@ -13,20 +13,17 @@ def load_and_split(data_path):
     train_features, test_features, train_labels, test_labels = split_data(features, labels, test_size=0.2)      # split into train and test sets
     return train_features, test_features, train_labels, test_labels
 
-# function to preprocess train and test sets
-def preprocess(train_features, test_features, train_labels, test_labels):
-    train_features_processed, test_features_processed, train_labels_encoded, test_labels_encoded = preprocess_features(train_features, test_features, train_labels, test_labels)
-    return train_features_processed, test_features_processed, train_labels_encoded, test_labels_encoded
 
 # main
 def main():
+
     data_path = "Data/ObesityDataSet_raw.csv"                                               # raw dataset path
     train_features, test_features, train_labels, test_labels = load_and_split(data_path)    # load data, split into train and test sets
-    print("Data successfully split into training and testing sets")
+    print("Data successfully split into training and testing sets.")
     
     # preprocess traina nd test sets
-    train_features_processed, test_features_processed, train_labels_processed, test_labels_processed = preprocess(train_features, test_features, train_labels, test_labels)
-    print("Data successfully processed")
+    train_features_processed, test_features_processed, train_labels_processed, test_labels_processed = preprocess_features(train_features, test_features, train_labels, test_labels)
+    print("Data successfully processed.")
     
     # Initivalize Models
 

@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 
 # function to load raw csv data
 def load_data(filepath):
+    print('Loading Data ..')
     return pd.read_csv(filepath)                        # read and load the dataset      
 
 # function to seperate features and labels
