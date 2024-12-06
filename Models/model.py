@@ -1,8 +1,8 @@
 class Model:
-    def train(X, Y):
+    def train(self, X, Y):
         pass
 
-    def predict(X):
+    def predict(self, X):
         pass
 
     # Add other as expected ...
