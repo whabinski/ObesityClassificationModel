@@ -28,9 +28,16 @@ def main():
     train_features_processed, test_features_processed, train_labels_processed, test_labels_processed = preprocess(train_features, test_features, train_labels, test_labels)
     print("Data successfully processed")
     
+    # Initivalize Models
+
     svm = SupportVectorMachine()    # initialize support vector machine model
     nn = NeuralNetwork()            # initialize neural network model
     lgrg = LogisticRegression()     # initailize logistic regression model
+    models = [svm, nn, lgrg]
+
+    #
+    for model in models:
+        pass
 
 if __name__=='__main__':
     main()
