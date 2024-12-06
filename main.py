@@ -3,6 +3,7 @@ from Models.logistic_regression import LogisticRegression
 from Models.neural_network import NeuralNetwork
 from Models.svm_model import SupportVectorMachine
 
+from Scripts import feature_analysis
 from Scripts.load_and_split_data import load_data, create_feature_and_target, split_data
 from Scripts.preprocess_data import preprocess_features
 
@@ -25,8 +26,10 @@ def main():
     train_features_processed, test_features_processed, train_labels_processed, test_labels_processed = preprocess_features(train_features, test_features, train_labels, test_labels)
     print("Data successfully processed.")
     
-    # Initivalize Models
+    # Feature Analysis
+    feature_analysis()
 
+    # Initivalize Models
     svm = SupportVectorMachine()    # initialize support vector machine model
     nn = NeuralNetwork()            # initialize neural network model
     lgrg = LogisticRegression()     # initailize logistic regression model
