@@ -1,5 +1,5 @@
 class Model:
-    def train_model(self, X, Y):
+    def train(self, X, Y):
         pass
 
     def predict(self, X):
