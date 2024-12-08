@@ -66,5 +66,5 @@ def main():
     eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)              # evaluate metrics
 
 if __name__=='__main__':
-    np.random.seed(RANDOM_SEED)
+    np.random.seed(42)
     main()
