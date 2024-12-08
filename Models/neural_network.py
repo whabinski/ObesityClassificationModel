@@ -107,19 +107,3 @@ class NeuralNetwork(Model):
             # Convert to Predicted Score
             predictedLabels = torch.argmax(predictedLabels, dim=1)
             return predictedLabels.detach().numpy() if isinstance(predictedLabels, torch.Tensor) else predictedLabels
-
-    def evaluate(self, features, labels):
-            
-            # Read
-            predictedLabels = self.predict(features)
-
-            # Convert to proper 
-            labels = labels.numpy() if isinstance(labels, torch.Tensor) else labels
-
-            # Calculate Metrics
-            accuracy = accuracy_score(labels, predictedLabels)
-            precision = precision_score(labels, predictedLabels, average='weighted')
-            recall = recall_score(labels, predictedLabels, average='weighted')
-            f1 = f1_score(labels, predictedLabels, average='weighted')
-
-            return accuracy, precision, recall, f1

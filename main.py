@@ -51,14 +51,15 @@ def main():
 
     # Initivalize Models
     svm = SupportVectorMachine(kernel='linear', C=1)                             # initialize support vector machine model
-    #nn = NeuralNetwork(feature_count=featureCount, label_count=labelCount)      # initialize neural network model
+    nn = NeuralNetwork(feature_count=featureCount, label_count=labelCount)      # initialize neural network model
     lgrg = LogisticRegression(featureCount,labelCount)                           # initailize logistic regression model
     models = {
-        'Support Vector Machine': svm, 
-        #'Neural Network': nn, 
-        'Logistic Regression': lgrg,
+        # 'Support Vector Machine': svm, 
+        'Neural Network': nn, 
+        # 'Logistic Regression': lgrg,
     }
 
+    # Evaluate using training datq
     eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
     eval_bias_variance(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)       # evaluate bias and variance
     eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)              # evaluate metrics
