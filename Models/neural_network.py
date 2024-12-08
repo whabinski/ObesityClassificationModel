@@ -43,7 +43,7 @@ class NeuralNetwork(Model):
     def __init__(self, feature_count, label_count):
 
         self.learning_rate = 0.02
-        self.epochs = 800
+        self.epochs = 400
         self.batch_size = 64
         
         self.feature_count = feature_count
@@ -90,9 +90,9 @@ class NeuralNetwork(Model):
 
             losses.append(totalLoss)
 
-        print('Finished Training')
-        print(f'Final Epoch Train Loss: {totalLoss:.4f}')
-        # plot_metrics(losses, 'Loss', True)
+        # print('Finished Training')
+        # print(f'Final Epoch Train Loss: {totalLoss:.4f}')
+        plot_metrics(losses, 'Loss', True)
     
 
     def predict(self, features):

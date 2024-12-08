@@ -3,7 +3,7 @@ from Models.logistic_regression import LogisticRegression
 from Models.neural_network import NeuralNetwork
 from Models.svm_model import SupportVectorMachine
 
-from Scripts.load_and_split_data import load_data, create_feature_and_target, split_data
+from Scripts.load_and_split_data import load_data, create_feature_and_target, split_data, RANDOM_SEED
 from Scripts.preprocess_data import preprocess_features
 from Scripts.evaluations import evaluate_metrics, evaluate_kfold, evaluate_bias_variance
 
@@ -46,6 +46,7 @@ def main():
     train_features_processed, test_features_processed, train_labels_processed, test_labels_processed = preprocess_features(train_features, test_features, train_labels, test_labels)
     print("Data successfully processed.")
 
+    # Define the Expected Input and Output dimensions for classification
     featureCount = train_features_processed.shape[1]
     labelCount = len(train_labels.unique())
 
@@ -54,10 +55,12 @@ def main():
     nn = NeuralNetwork(feature_count=featureCount, label_count=labelCount)      # initialize neural network model
     lgrg = LogisticRegression(featureCount,labelCount)                           # initailize logistic regression model
     models = {
-        # 'Support Vector Machine': svm, 
+        'Support Vector Machine': svm, 
         'Neural Network': nn, 
-        # 'Logistic Regression': lgrg,
+        'Logistic Regression': lgrg,
     }
+
+    nn.train(train_features_processed, train_labels_processed)
 
     # Evaluate using training datq
     eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
@@ -65,5 +68,5 @@ def main():
     eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)              # evaluate metrics
 
 if __name__=='__main__':
-    np.random.seed(42)
+    np.random.seed(RANDOM_SEED)
     main()
