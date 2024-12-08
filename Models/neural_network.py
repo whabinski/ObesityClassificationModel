@@ -45,10 +45,9 @@ class NeuralNetwork(Model):
         self.learning_rate = 0.02
         self.epochs = 800
         self.batch_size = 64
-
-        self.model = NNChildClass(feature_count, label_count)
-        self.optimizer = optim.SGD(self.model.parameters(), lr=self.learning_rate)
-        self.criterion = nn.CrossEntropyLoss()
+        
+        self.feature_count = feature_count
+        self.label_count = label_count
 
     def create_data_loader(self, features, labels):
 
@@ -57,6 +56,11 @@ class NeuralNetwork(Model):
 
 
     def train(self, features, labels):
+
+        self.model = NNChildClass(self.feature_count, self.label_count)
+        self.optimizer = optim.SGD(self.model.parameters(), lr=self.learning_rate)
+        self.criterion = nn.CrossEntropyLoss()
+
         model = self.model
         model.train()
 
