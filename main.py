@@ -15,7 +15,6 @@ def load_and_split(data_path):
     train_features, test_features, train_labels, test_labels = split_data(features, labels, test_size=0.2)      # split into train and test sets
     return train_features, test_features, train_labels, test_labels
 
-
 # main
 def main():
 

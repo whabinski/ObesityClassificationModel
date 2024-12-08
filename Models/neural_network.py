@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 from Scripts.plots import plot_metrics
 
@@ -45,7 +46,7 @@ class NeuralNetwork(Model):
     def __init__(self, feature_count, label_count):
 
         self.learning_rate = 0.02
-        self.epochs = 1200
+        self.epochs = 800
         self.batch_size = 64
 
         self.model = NNChildClass(feature_count, label_count)
@@ -83,14 +84,14 @@ class NeuralNetwork(Model):
 
                 # Backward pass and optimization
                 self.optimizer.zero_grad()  # Clear previous gradients
-                loss.backward()  # Backpropagate gradients
-                self.optimizer.step()  # Update weights
+                loss.backward()             # Backpropagate gradients
+                self.optimizer.step()       # Update weights
 
             losses.append(totalLoss)
 
         print('Finished Training')
         print(f'Final Epoch Train Loss: {totalLoss:.4f}')
-        plot_metrics(losses, 'Loss', True)
+        # plot_metrics(losses, 'Loss', True)
     
 
     def predict(self, features):
@@ -98,41 +99,29 @@ class NeuralNetwork(Model):
 
     def evaluate(self, features, labels):
 
-        # Switch
-        model = self.model
-        model.eval()
+        # Model switch
+        self.model.eval()
+        with torch.no_grad():
 
-        # Accuracy
-        correct = 0
-        total = 0
+            # Convert and Predict
+            features = torch.tensor(features, dtype=torch.float32)
+            predictedLabels = self.model(features)
 
-        # Loss
-        totalLoss = 0
-        data_loader = self.create_data_loader(features, labels)
+            # Convert to Predicted Score
+            predictedLabels = torch.argmax(predictedLabels, dim=1)
 
-        with torch.no_grad():  # No gradient calculation for evaluation
+            # Convert to proper 
+            labels = labels.numpy() if isinstance(labels, torch.Tensor) else labels
+            predictedLabels = predictedLabels.detach().numpy() if isinstance(predictedLabels, torch.Tensor) else predictedLabels
 
-            for X, Y in data_loader:
+            # Calculate Metrics
+            accuracy = accuracy_score(labels, predictedLabels)
+            precision = precision_score(labels, predictedLabels, average='weighted')
+            recall = recall_score(labels, predictedLabels, average='weighted')
+            f1 = f1_score(labels, predictedLabels, average='weighted')
 
-                # Check Evaluation
-                outputs = model(X)
-
-                # Get class with highest score
-                _, predicted = torch.max(outputs, 1)
-
-                # Keep Track of Ratio
-                correct += (predicted == Y).sum().item()
-                total += Y.size(0)
-
-                #get Loss
-                Y = Y.long()
-                loss = self.criterion(outputs, Y)
-                totalLoss += loss
-
-        # Calculate
-        accuracy = 100 * correct / total
-        avg_loss = totalLoss / total
-
-        print(f'Eval: Test Acc: {accuracy}% - Avg Test Loss: {avg_loss}')
-
-        return accuracy, avg_loss
+            # Report
+            print(f"Accuracy:   {accuracy*100:.2f}%")
+            print(f"Precision:  {precision:.4f}")
+            print(f"Recall:     {recall:.4f}")
+            print(f"F1-Score:   {f1:.4f}")
