@@ -1,31 +1,40 @@
 import numpy as np
 import pandas as pd
+
+from Scripts.feature_engineering import feature_selection
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder, StandardScaler
+
 
 # function to preprocess train and test sets
 def preprocess_features(train_features, test_features, train_labels, test_labels):
     
-    categorical_columns = train_features.select_dtypes(include=['object', 'category']).columns.tolist()     # dynamically define categorical columns to be processed
-    numerical_columns = train_features.select_dtypes(include=['number']).columns.tolist()                   # dynamically define numerical columns to be processed
-
-    # process (nominal) categorical columns using one hot encoding
-    onehot_encoder = OneHotEncoder(sparse_output=False)                                             # initialize one hot encoding
-    train_categorical_encoded = onehot_encoder.fit_transform(train_features[categorical_columns])   # fit and apply encoder to training set
-    test_categorical_encoded = onehot_encoder.transform(test_features[categorical_columns])         # apply encoder to test set
-
-    # process numerical columns using standard scalar
-    scaler = StandardScaler()                                                                       # initialize standard scalar
-    train_numerical_scaled = scaler.fit_transform(train_features[numerical_columns])                # fit and apply scalar to training set
-    test_numerical_scaled = scaler.transform(test_features[numerical_columns])                      # apply scalar to test set
-
-    # recombine categorical and numerical columns
-    train_features_processed = np.hstack((train_categorical_encoded, train_numerical_scaled))       # combine processed categorical and numerical train set columns
-    test_features_processed = np.hstack((test_categorical_encoded, test_numerical_scaled))          # combine processed categorical and numerical test set columns
-
     # process labels to numeric format using label encoder
     label_encoder = LabelEncoder()                                                                  # initialize label encoder
     train_labels_processed = label_encoder.fit_transform(train_labels)                              # fit and apply label encoder to training set
     test_labels_processed = label_encoder.transform(test_labels)                                    # apply label encoder to test set
+    
+    categorical_columns = train_features.select_dtypes(include=['object', 'category']).columns.tolist()     # dynamically define categorical columns to be processed
+    numerical_columns = train_features.select_dtypes(include=['number']).columns.tolist()                   # dynamically define numerical columns to be processed
+
+    # perform correltion analysis, and feature selection
+    selected_categorical_columns, selected_numerical_columns = feature_selection(categorical_columns, numerical_columns, train_features, test_features, train_labels_processed)
+
+    print(f"# categorical: {len(selected_categorical_columns)} {selected_categorical_columns}")
+    print(f"# numerical: {len(selected_numerical_columns)} {selected_numerical_columns}")
+
+    # process (nominal) categorical columns using one hot encoding
+    onehot_encoder = OneHotEncoder(sparse_output=False)                                                         # initialize one hot encoding
+    train_categorical_encoded = onehot_encoder.fit_transform(train_features[selected_categorical_columns])      # fit and apply encoder to training set
+    test_categorical_encoded = onehot_encoder.transform(test_features[selected_categorical_columns])            # apply encoder to test set
+
+    # process numerical columns using standard scalar
+    scaler = StandardScaler()                                                                               # initialize standard scalar
+    train_numerical_scaled = scaler.fit_transform(train_features[selected_numerical_columns])               # fit and apply scalar to training set
+    test_numerical_scaled = scaler.transform(test_features[selected_numerical_columns])                     # apply scalar to test set
+
+    # recombine categorical and numerical columns
+    train_features_processed = np.hstack((train_categorical_encoded, train_numerical_scaled))       # combine processed categorical and numerical train set columns
+    test_features_processed = np.hstack((test_categorical_encoded, test_numerical_scaled))          # combine processed categorical and numerical test set columns
 
     # verify preprocessing functions
     # verification(train_categorical_encoded, test_categorical_encoded, train_numerical_scaled, test_numerical_scaled, label_encoder, train_features_processed, test_features_processed, train_labels_processed, test_labels_processed)

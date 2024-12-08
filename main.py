@@ -1,4 +1,4 @@
-
+import numpy as np
 from Models.logistic_regression import LogisticRegression
 from Models.neural_network import NeuralNetwork
 from Models.svm_model import SupportVectorMachine
@@ -59,9 +59,10 @@ def main():
         'Logistic Regression': lgrg,
     }
 
-    #eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
-    #eval_bias_variance(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)       # evaluate bias and variance
+    eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
+    eval_bias_variance(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)       # evaluate bias and variance
     eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)              # evaluate metrics
 
 if __name__=='__main__':
+    np.random.seed(42)
     main()
