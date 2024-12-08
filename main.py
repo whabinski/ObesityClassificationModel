@@ -59,9 +59,7 @@ def main():
         'Neural Network': nn, 
         'Logistic Regression': lgrg,
     }
-
-    nn.train(train_features_processed, train_labels_processed)
-
+    
     # Evaluate using training datq
     eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
     eval_bias_variance(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)       # evaluate bias and variance
