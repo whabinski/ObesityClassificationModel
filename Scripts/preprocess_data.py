@@ -5,8 +5,8 @@ from sklearn.preprocessing import OneHotEncoder, LabelEncoder, StandardScaler
 # function to preprocess train and test sets
 def preprocess_features(train_features, test_features, train_labels, test_labels):
     
-    categorical_columns = ['Gender', 'family_history_with_overweight', 'FAVC', 'CAEC', 'SMOKE', 'SCC', 'CALC', 'MTRANS']    # define categorical columns to be processed
-    numerical_columns = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE', 'BMI']                                    # define numerical columns to be processed
+    categorical_columns = train_features.select_dtypes(include=['object', 'category']).columns.tolist()     # dynamically define categorical columns to be processed
+    numerical_columns = train_features.select_dtypes(include=['number']).columns.tolist()                   # dynamically define numerical columns to be processed
 
     # process (nominal) categorical columns using one hot encoding
     onehot_encoder = OneHotEncoder(sparse_output=False)                                             # initialize one hot encoding
