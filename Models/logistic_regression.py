@@ -14,12 +14,15 @@ class LRModel(nn.Module):
 
 class LogisticRegression(Model): 
     def __init__(self, n_inputs, n_classes):
-        self.model = LRModel(n_inputs, n_classes)
+        self.n_inputs = n_inputs
+        self.n_classes = n_classes
+        
 
     def train(self, X, Y, learning_rate=0.1, epochs=1000):
         # criterions: 
         # nn.CrossEntropyLoss() - evaluate as classification (ordinal doesnt matter)
         # nn.MSELoss() - evaluate as regression (classes dont matter much)
+        self.model = LRModel(self.n_inputs, self.n_classes)
         criterion = nn.CrossEntropyLoss()
         optimizer = optim.SGD(self.model.parameters(), lr=learning_rate)
         X_ = torch.from_numpy(X).float()
