@@ -5,6 +5,7 @@ from Models.svm_model import SupportVectorMachine
 
 from Scripts.load_and_split_data import load_data, create_feature_and_target, split_data
 from Scripts.preprocess_data import preprocess_features
+from Scripts.evaluations import evaluate
 
 # function to load data, seperate features and labels, and split into training and testing sets
 def load_and_split(data_path):
@@ -28,15 +29,23 @@ def main():
     labelCount = len(train_labels.unique())
 
     # Initivalize Models
-    svm = SupportVectorMachine()                                                # initialize support vector machine model
-    nn = NeuralNetwork(feature_count=featureCount, label_count=labelCount)      # initialize neural network model
-    lgrg = LogisticRegression()                                                 # initailize logistic regression model
-    models = [svm, nn, lgrg]
+    svm = SupportVectorMachine(kernel='linear', C=1)                             # initialize support vector machine model
+    #nn = NeuralNetwork(feature_count=featureCount, label_count=labelCount)      # initialize neural network model
+    lgrg = LogisticRegression()                                                  # initailize logistic regression model
+    models = [{"name": "Support Vector Machine Model", "type": svm}, 
+              {"name": "Logistic Regression Model", "type": lgrg}] 
+            #,{"name": "Neural Network Model", "type": nn}]
 
     #
     for model in models:
-        model.train(train_features_processed, train_labels_processed)
-        model.evaluate(test_features_processed, test_labels_processed)
+        print(f"-----------------------------{model["name"]}-----------------------------")
+        print(f"TRAINING....................\n")
+        model["type"].train(train_features_processed, train_labels_processed)
+        print(f"Predicting..................\n")
+        predictions = model["type"].predict(test_features_processed)
+        print(f"Evaluating..................\n")
+        evaluate(test_labels_processed, predictions)
+        print(f"\n")
 
 if __name__=='__main__':
     main()
