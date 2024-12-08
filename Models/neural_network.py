@@ -14,8 +14,8 @@ class NNChildClass(nn.Module):
         self.relu = nn.ReLU()
         
         c = feature_count
-        self.fc1 = nn.Linear(c, c*3)
-        self.fc2 = nn.Linear(c*3, c)
+        self.fc1 = nn.Linear(c, c*2)
+        self.fc2 = nn.Linear(c*2, c)
         self.classify = nn.Linear(c, label_count)
 
     def forward(self, x):
