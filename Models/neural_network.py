@@ -107,3 +107,9 @@ class NeuralNetwork(Model):
             # Convert to Predicted Score
             predictedLabels = torch.argmax(predictedLabels, dim=1)
             return predictedLabels.detach().numpy() if isinstance(predictedLabels, torch.Tensor) else predictedLabels
+        
+    def save(self, fname):
+        torch.save(self.model.state_dict(), fname)
+
+    def load(self, fname):
+        self.model.load_state_dict(torch.load(fname))
