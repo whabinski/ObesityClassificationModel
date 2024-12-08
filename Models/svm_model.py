@@ -1,3 +1,4 @@
+import pickle
 from Models.model import Model
 from sklearn.svm import SVC
 
@@ -30,3 +31,13 @@ class SupportVectorMachine(Model):
     def predict(self, features):
         predictions = self.model.forward(features)     # get predictions for test features
         return predictions
+    
+    # save to pickle file
+    def save(self, fname):
+        with open(fname, 'wb') as f:
+            pickle.dump(self.model, f)
+
+    # load from pickle
+    def load(self, fname):
+        with open(fname, 'rb') as file:
+            self.model = pickle.load(file)
