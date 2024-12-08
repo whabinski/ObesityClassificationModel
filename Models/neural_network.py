@@ -4,6 +4,8 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
+from Scripts.plots import plot_metrics
+
 class NNChildClass(nn.Module):
     def __init__(self, feature_count, label_count):
         super(NNChildClass, self).__init__()
@@ -12,12 +14,12 @@ class NNChildClass(nn.Module):
         c = feature_count
         self.fc1 = nn.Linear(c, c*3)
         self.fc2 = nn.Linear(c*3, c)
-        self.fc3 = nn.Linear(c, label_count)
+        self.classify = nn.Linear(c, label_count)
 
     def forward(self, x):
         x = self.relu(self.fc1(x))
         x = self.relu(self.fc2(x))
-        x = self.relu(self.fc3(x))
+        x = self.relu(self.classify(x))
 
         return x
 
@@ -43,7 +45,7 @@ class NeuralNetwork(Model):
     def __init__(self, feature_count, label_count):
 
         self.learning_rate = 0.02
-        self.epochs = 10
+        self.epochs = 1200
         self.batch_size = 64
 
         self.model = NNChildClass(feature_count, label_count)
@@ -60,10 +62,15 @@ class NeuralNetwork(Model):
         model = self.model
         model.train()
 
-        epochs = 20
-        data_loader = self.create_data_loader(features, labels)
+        losses = []
 
-        for epoch in range(epochs):
+        data_loader = self.create_data_loader(features, labels)
+        for epoch in range(self.epochs):
+
+            if epoch % 100 == 0:
+                print(f'\nEpoch {epoch} ', end=' ')
+            elif epoch % 5 == 0:
+                print('.', end='')
 
             totalLoss = 0
             for X, Y in data_loader:
@@ -79,8 +86,12 @@ class NeuralNetwork(Model):
                 loss.backward()  # Backpropagate gradients
                 self.optimizer.step()  # Update weights
 
+            losses.append(totalLoss)
+
         print('Finished Training')
         print(f'Final Epoch Train Loss: {totalLoss:.4f}')
+        plot_metrics(losses, 'Loss', True)
+    
 
     def predict(self, features):
         return self.model(features)
