@@ -41,7 +41,7 @@ def main():
     data_path = "Data/ObesityDataSet_raw.csv"                                               # raw dataset path
     train_features, test_features, train_labels, test_labels = load_and_split(data_path)    # load data, split into train and test sets
     print("Data successfully split into training and testing sets.")
-
+    
     # preprocess traina nd test sets
     train_features_processed, test_features_processed, train_labels_processed, test_labels_processed = preprocess_features(train_features, test_features, train_labels, test_labels)
     print("Data successfully processed.")
@@ -52,7 +52,7 @@ def main():
     # Initivalize Models
     svm = SupportVectorMachine(kernel='linear', C=1)                             # initialize support vector machine model
     #nn = NeuralNetwork(feature_count=featureCount, label_count=labelCount)      # initialize neural network model
-    lgrg = LogisticRegression()                                                  # initailize logistic regression model
+    lgrg = LogisticRegression(featureCount,labelCount)                           # initailize logistic regression model
     models = {
         'Support Vector Machine': svm, 
         #'Neural Network': nn, 
