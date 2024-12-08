@@ -25,7 +25,7 @@ def eval_normal(models, train_features_processed, train_labels_processed, test_f
         evaluate(test_labels_processed, predictions)
         print(f"\n")
 
-def eval_kfold(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed):
+def eval_kfold(models, train_features_processed, train_labels_processed):
     for name, model in models.items():
         print(f"\nPerforming K-Fold Cross-Validation for {name}...")
         perform_kfold(model, train_features_processed, train_labels_processed, k=5, model_type=model)
@@ -59,9 +59,9 @@ def main():
         'Logistic Regression': lgrg,
     }
 
-    #eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)
-    #eval_kfold(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)
+    #eval_kfold(models, train_features_processed, train_labels_processed)
     #eval_bias_variance(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)
+    eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)
 
 if __name__=='__main__':
     main()
