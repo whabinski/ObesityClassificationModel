@@ -92,10 +92,6 @@ class NeuralNetwork(Model):
     
 
     def predict(self, features):
-        return self.model(features)
-
-    def evaluate(self, features, labels):
-
         # Model switch
         self.model.eval()
         with torch.no_grad():
@@ -106,10 +102,15 @@ class NeuralNetwork(Model):
 
             # Convert to Predicted Score
             predictedLabels = torch.argmax(predictedLabels, dim=1)
+            return predictedLabels.detach().numpy() if isinstance(predictedLabels, torch.Tensor) else predictedLabels
+
+    def evaluate(self, features, labels):
+            
+            # Read
+            predictedLabels = self.predict(features)
 
             # Convert to proper 
             labels = labels.numpy() if isinstance(labels, torch.Tensor) else labels
-            predictedLabels = predictedLabels.detach().numpy() if isinstance(predictedLabels, torch.Tensor) else predictedLabels
 
             # Calculate Metrics
             accuracy = accuracy_score(labels, predictedLabels)
