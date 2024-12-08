@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_selection import mutual_info_classif
 
+SHOW_GRAPHS = False
+
 # funciton to calculate bmi and add as new column to data
 def add_bmi_column(data):
     data['BMI'] = (data['Weight'] / (data['Height'] ** 2)).round(2)     # BMI = weight (kg) / height (meters) squared
@@ -25,7 +27,8 @@ def numerical_correlation_analysis(features, labels, threshold=0.1):
     plt.figure(figsize=(10, 8))
     sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", fmt=".2f")
     plt.title(f"Correlation Matrix with Threshold = {threshold}")
-    plt.show()
+    if SHOW_GRAPHS: 
+        plt.show()
     
     return selected_features
 
@@ -50,7 +53,8 @@ def categorical_correlation_analysis(features, labels, threshold = 0.05):
     plt.xlabel("Mutual Information Score")
     plt.ylabel("Features")
     plt.tight_layout()
-    plt.show()
+    if SHOW_GRAPHS: 
+        plt.show()
     
     return selected_categorical_features
 

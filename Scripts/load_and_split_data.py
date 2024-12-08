@@ -1,4 +1,5 @@
 import pandas as pd
+from Scripts.evaluations import RANDOM_SEED
 from Scripts.feature_engineering import add_bmi_column
 from sklearn.model_selection import train_test_split
 
@@ -23,5 +24,5 @@ def create_feature_and_target(data):
 # function to split dataset into training and testing sets
 def split_data(features, labels, test_size):
     # split dataset into train and test sets
-    train_features, test_features, train_labels, test_labels = train_test_split(features, labels, test_size=test_size, random_state=42)
+    train_features, test_features, train_labels, test_labels = train_test_split(features, labels, test_size=test_size, random_state=RANDOM_SEED)
     return train_features, test_features, train_labels, test_labels

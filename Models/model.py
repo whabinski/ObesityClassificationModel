@@ -5,7 +5,4 @@ class Model:
     def predict(self, features):
         pass
 
-    def evaluate(self, features, labels):
-        pass
-
     # Add other as expected ...

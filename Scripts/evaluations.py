@@ -2,10 +2,12 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
+RANDOM_SEED = 1561960643
+
 # funtion to evaluate performance of models using basic metrics; accuracy, precision, recall, f1, and confusion matrix
 def evaluate_metrics(test_labels, predictions):
         accuracy = accuracy_score(test_labels, predictions)                             # calucalte accuracy using sklearns accuracy method: proportion of correctly classified samples
-        precision = precision_score(test_labels, predictions, average='weighted')       # calucalte precision using sklearns precision method: ratio of TP/TP+FP averaged over each class (weighted)
+        precision = precision_score(test_labels, predictions, average='weighted', zero_division=0)       # calucalte precision using sklearns precision method: ratio of TP/TP+FP averaged over each class (weighted)
         recall = recall_score(test_labels, predictions, average='weighted')             # calucalte recall using sklearns recall method: ratio of TP/TP+FN averaged over each class (weighted)
         f1 = f1_score(test_labels, predictions, average='weighted')                     # calucalte f1 using sklearns f1 method: 2/ inv(precision) + inv(recall) averaged over each class (weighted)
         cm = confusion_matrix(test_labels, predictions)                                 # calucalte confusion matrix using sklearns confusion matrix method
@@ -20,7 +22,7 @@ def evaluate_metrics(test_labels, predictions):
 # function to perform k fold cross validation
 def evaluate_kfold(model, features, labels, folds):
 
-    kfolds = KFold(n_splits=folds, shuffle=True, random_state=42)                   # initialize sklearn's k-fold cross validation
+    kfolds = KFold(n_splits=folds, shuffle=True, random_state=RANDOM_SEED)                   # initialize sklearn's k-fold cross validation
 
     accuracy_list = []      # initialize empty list for accuracy scores per fold
     precision_list = []     # initialize empty list for precision scores per fold
@@ -41,9 +43,9 @@ def evaluate_kfold(model, features, labels, folds):
         predictions = model.predict(test_features)                                  # make predictions on test features
 
         accuracy_list.append(accuracy_score(test_labels, predictions))                              # add current fold accuracy score to list
-        precision_list.append(precision_score(test_labels, predictions, average='weighted'))        # add current fold precision score to list
-        recall_list.append(recall_score(test_labels, predictions, average='weighted'))              # add current fold recall score to list
-        f1_list.append(f1_score(test_labels, predictions, average='weighted'))                      # add current fold f1 score to list
+        precision_list.append(precision_score(test_labels, predictions, average='weighted', zero_division=0))        # add current fold precision score to list
+        recall_list.append(recall_score(test_labels, predictions, average='weighted', zero_division=0))              # add current fold recall score to list
+        f1_list.append(f1_score(test_labels, predictions, average='weighted', zero_division=0))                      # add current fold f1 score to list
 
     accuracy_avg = sum(accuracy_list) / len(accuracy_list)      # calculate average for accuracy
     precision_avg = sum(precision_list) / len(precision_list)   # calculate average for precision
