@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 class LRModel(nn.Module):
-    def __init__(self, n_inputs=31, n_classes=7):
+    def __init__(self, n_inputs, n_classes):
         super(LRModel, self).__init__()
         self.linear = nn.Linear(n_inputs, n_classes)
 
@@ -13,8 +13,8 @@ class LRModel(nn.Module):
         return self.linear(x).squeeze(-1) # squeeze to change shape from (n, 1) to (n,)
 
 class LogisticRegression(Model): 
-    def __init__(self):
-        self.model = LRModel()
+    def __init__(self, n_inputs, n_classes):
+        self.model = LRModel(n_inputs, n_classes)
 
     def train(self, X, Y, learning_rate=0.1, epochs=1000):
         # criterions: 

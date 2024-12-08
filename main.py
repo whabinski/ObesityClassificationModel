@@ -1,12 +1,11 @@
-
+import numpy as np
 from Models.logistic_regression import LogisticRegression
 from Models.neural_network import NeuralNetwork
 from Models.svm_model import SupportVectorMachine
 
-from Scripts import feature_analysis
 from Scripts.load_and_split_data import load_data, create_feature_and_target, split_data
 from Scripts.preprocess_data import preprocess_features
-from Scripts.feature_analysis import feature_analysis
+from Scripts.evaluations import evaluate_metrics, evaluate_kfold, evaluate_bias_variance
 
 # function to load data, seperate features and labels, and split into training and testing sets
 def load_and_split(data_path):
@@ -15,6 +14,27 @@ def load_and_split(data_path):
     train_features, test_features, train_labels, test_labels = split_data(features, labels, test_size=0.2)      # split into train and test sets
     return train_features, test_features, train_labels, test_labels
 
+# function to evaluate regular accuracy, precisoin, recall, f1, confusion matrix metrics
+def eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed):
+    for name, model in models.items():                                      # iterate through all models
+        print(f"\nPerforming metric evaluation for {name}...") 
+        model.train(train_features_processed, train_labels_processed)       # train the model on train data
+        predictions = model.predict(test_features_processed)                # make predictions on test features
+        evaluate_metrics(test_labels_processed, predictions)                # calculate metrics
+
+# function to perform kfold cross validation
+def eval_kfold(models, train_features_processed, train_labels_processed):
+    for name, model in models.items():                                                      # iterate through models
+        print(f"\nPerforming K-Fold Cross-Validation for {name}...")                        
+        evaluate_kfold(model, train_features_processed, train_labels_processed, folds=5)    # perform kfold
+
+# function to evaluate bias and variance
+def eval_bias_variance(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed):
+    for name, model in models.items():                                  # iterate through models
+        print(f"\nPerforming Bias-Variance Analysis for {name}...")
+        # evaluate bias and variance
+        evaluate_bias_variance(model, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)
+
 # main
 def main():
 
@@ -22,10 +42,6 @@ def main():
     train_features, test_features, train_labels, test_labels = load_and_split(data_path)    # load data, split into train and test sets
     print("Data successfully split into training and testing sets.")
     
-
-    # Feature Analysis
-    feature_analysis(train_features, test_features)
-
     # preprocess traina nd test sets
     train_features_processed, test_features_processed, train_labels_processed, test_labels_processed = preprocess_features(train_features, test_features, train_labels, test_labels)
     print("Data successfully processed.")
@@ -34,30 +50,19 @@ def main():
     labelCount = len(train_labels.unique())
 
     # Initivalize Models
-    svm = SupportVectorMachine()         # initialize support vector machine model
-    nn = NeuralNetwork(feature_count=featureCount, label_count=labelCount)   # initialize neural network model
-    lgrg = LogisticRegression()          # initailize logistic regression model
+    svm = SupportVectorMachine(kernel='linear', C=1)                             # initialize support vector machine model
+    #nn = NeuralNetwork(feature_count=featureCount, label_count=labelCount)      # initialize neural network model
+    lgrg = LogisticRegression(featureCount,labelCount)                           # initailize logistic regression model
     models = {
         'Support Vector Machine': svm, 
-        'Neural Network': nn, 
+        #'Neural Network': nn, 
         'Logistic Regression': lgrg,
     }
 
-    # Training ( So that evaluation all comes at once )
-    for name, model in models.items():
-        print(f'Training {name}')
-        model.train(train_features_processed, train_labels_processed)
-
-    # Evaluate
-    for name, model in models.items():
-        print(f'Evaluating {name}')
-        accuracy, precision, recall, f1 = model.evaluate(test_features_processed, test_labels_processed)
-        
-        # Report
-        print(f"Accuracy:   {accuracy*100:.2f}%")
-        print(f"Precision:  {precision:.4f}")
-        print(f"Recall:     {recall:.4f}")
-        print(f"F1-Score:   {f1:.4f}")
+    eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
+    eval_bias_variance(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)       # evaluate bias and variance
+    eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)              # evaluate metrics
 
 if __name__=='__main__':
+    np.random.seed(42)
     main()
