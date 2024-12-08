@@ -2,7 +2,7 @@ from Models.model import Model
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader
+from torch.utils.data import Dataset, DataLoader
 
 from Scripts.plots import plot_metrics
 
@@ -22,10 +22,6 @@ class NNChildClass(nn.Module):
         x = self.relu(self.classify(x))
 
         return x
-
-import torch
-from torch.utils.data import Dataset, DataLoader
-
 
 # Helper Function for laoding the the dataset
 class CustomDataset(Dataset):
