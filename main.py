@@ -37,12 +37,22 @@ def main():
     svm = SupportVectorMachine()         # initialize support vector machine model
     nn = NeuralNetwork(feature_count=featureCount, label_count=labelCount)   # initialize neural network model
     lgrg = LogisticRegression()          # initailize logistic regression model
-    models = [svm, nn, lgrg]
+    models = {
+        'Support Vector Machine': svm, 
+        'Neural Network': nn, 
+        'Logistic Regression': lgrg,
+    }
 
-    #
-    for model in models:
+    # Training ( So that evaluation all comes at once )
+    for name, model in models.items():
+        print(f'Training {name}')
         model.train(train_features_processed, train_labels_processed)
+
+    # Evaluate
+    for name, model in models.items():
+        print(f'Evaluating {name}')
         model.evaluate(test_features_processed, test_labels_processed)
+
 
 if __name__=='__main__':
     main()
