@@ -5,4 +5,7 @@ class Model:
     def predict(self, features):
         pass
 
+    def save(self):
+        pass
+
     # Add other as expected ...

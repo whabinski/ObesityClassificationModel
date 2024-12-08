@@ -59,11 +59,15 @@ def main():
         'Neural Network': nn, 
         'Logistic Regression': lgrg,
     }
-    
-    # Evaluate using training datq
+
+    # Evaluate using training data
     eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
     eval_bias_variance(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)       # evaluate bias and variance
     eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)              # evaluate metrics
+
+    for name, model in models.items():
+        print(f'Writing {name} to Pickle File...')
+        model.save()
 
 if __name__=='__main__':
     np.random.seed(42)
