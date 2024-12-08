@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from torch.utils.data import Dataset, DataLoader
 
 from Scripts.plots import plot_metrics
 
@@ -23,10 +24,6 @@ class NNChildClass(nn.Module):
         x = self.relu(self.classify(x))
 
         return x
-
-import torch
-from torch.utils.data import Dataset, DataLoader
-
 
 # Helper Function for laoding the the dataset
 class CustomDataset(Dataset):
