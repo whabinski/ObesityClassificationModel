@@ -5,7 +5,7 @@ from Models.svm_model import SupportVectorMachine
 
 from Scripts.load_and_split_data import load_data, create_feature_and_target, split_data
 from Scripts.preprocess_data import preprocess_features
-from Scripts.evaluations import evaluate, perform_kfold, bias_variance_analysis
+from Scripts.evaluations import evaluate_metrics, evaluate_kfold, evaluate_bias_variance
 
 # function to load data, seperate features and labels, and split into training and testing sets
 def load_and_split(data_path):
@@ -14,26 +14,26 @@ def load_and_split(data_path):
     train_features, test_features, train_labels, test_labels = split_data(features, labels, test_size=0.2)      # split into train and test sets
     return train_features, test_features, train_labels, test_labels
 
+# function to evaluate regular accuracy, precisoin, recall, f1, confusion matrix metrics
 def eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed):
-    for name, model in models.items():
-        print(f"-----------------------------{name}-----------------------------")
-        print(f"TRAINING....................\n")
-        model.train(train_features_processed, train_labels_processed)
-        print(f"Predicting..................\n")
-        predictions = model.predict(test_features_processed)
-        print(f"Evaluating..................\n")
-        evaluate(test_labels_processed, predictions)
-        print(f"\n")
+    for name, model in models.items():                                      # iterate through all models
+        print(f"\nPerforming metric evaluation for {name}...") 
+        model.train(train_features_processed, train_labels_processed)       # train the model on train data
+        predictions = model.predict(test_features_processed)                # make predictions on test features
+        evaluate_metrics(test_labels_processed, predictions)                # calculate metrics
 
+# function to perform kfold cross validation
 def eval_kfold(models, train_features_processed, train_labels_processed):
-    for name, model in models.items():
-        print(f"\nPerforming K-Fold Cross-Validation for {name}...")
-        perform_kfold(model, train_features_processed, train_labels_processed, k=5, model_type=model)
+    for name, model in models.items():                                                      # iterate through models
+        print(f"\nPerforming K-Fold Cross-Validation for {name}...")                        
+        evaluate_kfold(model, train_features_processed, train_labels_processed, folds=5)    # perform kfold
 
+# function to evaluate bias and variance
 def eval_bias_variance(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed):
-    for name, model in models.items():
+    for name, model in models.items():                                  # iterate through models
         print(f"\nPerforming Bias-Variance Analysis for {name}...")
-        bias_variance_analysis(model, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed, model)
+        # evaluate bias and variance
+        evaluate_bias_variance(model, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)
 
 # main
 def main():
@@ -59,9 +59,9 @@ def main():
         'Logistic Regression': lgrg,
     }
 
-    #eval_kfold(models, train_features_processed, train_labels_processed)
-    #eval_bias_variance(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)
-    eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)
+    #eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
+    #eval_bias_variance(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)       # evaluate bias and variance
+    eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)              # evaluate metrics
 
 if __name__=='__main__':
     main()

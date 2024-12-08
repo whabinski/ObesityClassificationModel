@@ -1,137 +1,72 @@
-
-# ... accuracy, precision, recall and f1-score metrics which will be
-# used for model evaluation as it ensures a comprehensive and reliable assessment for
-# classification models.
-
-import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
-def evaluate(test_labels, predictions):
-    # Calculate evaluation metrics
-        accuracy = accuracy_score(test_labels, predictions)
-        precision = precision_score(test_labels, predictions, average='weighted')
-        recall = recall_score(test_labels, predictions, average='weighted')
-        f1 = f1_score(test_labels, predictions, average='weighted')
-        cm = confusion_matrix(test_labels, predictions)
+# funtion to evaluate performance of models using basic metrics; accuracy, precision, recall, f1, and confusion matrix
+def evaluate_metrics(test_labels, predictions):
+        accuracy = accuracy_score(test_labels, predictions)                             # calucalte accuracy using sklearns accuracy method: proportion of correctly classified samples
+        precision = precision_score(test_labels, predictions, average='weighted')       # calucalte precision using sklearns precision method: ratio of TP/TP+FP averaged over each class (weighted)
+        recall = recall_score(test_labels, predictions, average='weighted')             # calucalte recall using sklearns recall method: ratio of TP/TP+FN averaged over each class (weighted)
+        f1 = f1_score(test_labels, predictions, average='weighted')                     # calucalte f1 using sklearns f1 method: 2/ inv(precision) + inv(recall) averaged over each class (weighted)
+        cm = confusion_matrix(test_labels, predictions)                                 # calucalte confusion matrix using sklearns confusion matrix method
         
+        # print all metrics
         print(f"Accuracy: {accuracy:.4f}")
         print(f"Precision: {precision:.4f}")
         print(f"Recall: {recall:.4f}")
         print(f"F1-Score: {f1:.4f}")
         print(f"Confusion Matrix:\n{cm}")
 
-        return {
-            "accuracy": accuracy,
-            "precision": precision,
-            "recall": recall,
-            "f1_score": f1,
-            "confusion_matrix": cm
-        }
-        
+# function to perform k fold cross validation
+def evaluate_kfold(model, features, labels, folds):
 
+    kfolds = KFold(n_splits=folds, shuffle=True, random_state=42)                   # initialize sklearn's k-fold cross validation
 
-def perform_kfold(model, features, labels, k=5, model_type="sklearn"):
-    """
-    Perform K-Fold Cross-Validation for a given model.
-    :param model: The model instance (SVM, Logistic Regression, or Neural Network).
-    :param features: Feature dataset.
-    :param labels: Target labels.
-    :param k: Number of folds for K-Fold.
-    :param model_type: Type of the model ('sklearn' or 'pytorch').
-    """
-    kf = KFold(n_splits=k, shuffle=True, random_state=42)
-    fold_metrics = []
+    accuracy_list = []      # initialize empty list for accuracy scores per fold
+    precision_list = []     # initialize empty list for precision scores per fold
+    recall_list = []        # initialize empty list for recall scores per fold
+    f1_list = []            # initialize empty list for f1 scores per fold
 
-    for fold, (train_idx, test_idx) in enumerate(kf.split(features)):
-        print(f"\nFold {fold + 1}/{k}")
+    split_indices = kfolds.split(features)      # generate train and test indicies for each new fold
+
+    # Iterate through the indices
+    for fold, (train_idx, test_idx) in enumerate(split_indices):                     # iterate through all train and test features for each fold 
+        print(f"\nFold {fold + 1}/{folds}")
 
         # Split data into train and test for the fold
         train_features, test_features = features[train_idx], features[test_idx]
         train_labels, test_labels = labels[train_idx], labels[test_idx]
 
-        # Train the model
-        model.train(train_features, train_labels)
+        model.train(train_features, train_labels)                                   # train the model using train features
+        predictions = model.predict(test_features)                                  # make predictions on test features
 
-        # Predict on the test fold
-        if model_type == "pytorch":
-            predictions = model.predict(test_features).numpy()  # Convert PyTorch tensor to numpy
-        else:
-            predictions = model.predict(test_features)
+        accuracy_list.append(accuracy_score(test_labels, predictions))                              # add current fold accuracy score to list
+        precision_list.append(precision_score(test_labels, predictions, average='weighted'))        # add current fold precision score to list
+        recall_list.append(recall_score(test_labels, predictions, average='weighted'))              # add current fold recall score to list
+        f1_list.append(f1_score(test_labels, predictions, average='weighted'))                      # add current fold f1 score to list
 
-        # Evaluate performance for the fold
-        accuracy = accuracy_score(test_labels, predictions)
-        precision = precision_score(test_labels, predictions, average='weighted')
-        recall = recall_score(test_labels, predictions, average='weighted')
-        f1 = f1_score(test_labels, predictions, average='weighted')
+    accuracy_avg = sum(accuracy_list) / len(accuracy_list)      # calculate average for accuracy
+    precision_avg = sum(precision_list) / len(precision_list)   # calculate average for precision
+    recall_avg = sum(recall_list) / len(recall_list)            # calculate average for recall
+    f1_avg = sum(f1_list) / len(f1_list)                        # calculate average for f1
 
-        print(f"Accuracy: {accuracy:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}, F1-Score: {f1:.4f}")
-        fold_metrics.append([accuracy, precision, recall, f1])
-
-    # Calculate average metrics across all folds
-    fold_metrics = np.array(fold_metrics)
-    avg_metrics = np.mean(fold_metrics, axis=0)
-
+    # print the average metrics
     print("\nAverage Metrics Across All Folds:")
-    print(f"Accuracy: {avg_metrics[0]:.4f}")
-    print(f"Precision: {avg_metrics[1]:.4f}")
-    print(f"Recall: {avg_metrics[2]:.4f}")
-    print(f"F1-Score: {avg_metrics[3]:.4f}")
+    print(f"Accuracy: {accuracy_avg:.4f}")
+    print(f"Precision: {precision_avg:.4f}")
+    print(f"Recall: {recall_avg:.4f}")
+    print(f"F1-Score: {f1_avg:.4f}")
 
-    return {
-        "accuracy": avg_metrics[0],
-        "precision": avg_metrics[1],
-        "recall": avg_metrics[2],
-        "f1_score": avg_metrics[3]
-    }
+# function to evaluate bias and variance
+def evaluate_bias_variance(model, features_train, labels_train, features_test, labels_test):
 
-def bias_variance_analysis(model, features_train, labels_train, features_test, labels_test, model_type="sklearn"):
-    """
-    Perform Bias-Variance Analysis for a given model.
-    :param model: The model instance (SVM, Logistic Regression, or Neural Network).
-    :param features_train: Training feature set.
-    :param labels_train: Training labels.
-    :param features_test: Testing feature set.
-    :param labels_test: Testing labels.
-    :param model_type: Type of model ('sklearn' or 'pytorch').
-    """
-    train_sizes = np.linspace(0.1, 1.0, 10)  # Use different portions of the training set
-    train_errors = []
-    test_errors = []
+    model.train(features_train, labels_train)                                       # train the model on training set
 
-    for train_size in train_sizes:
-        # Create subset of the training data
-        subset_size = int(train_size * len(features_train))
-        X_subset, Y_subset = features_train[:subset_size], labels_train[:subset_size]
+    train_predictions = model.predict(features_train)                               # predict on the training set
+    validation_predictions = model.predict(features_test)                           # predict on the test set
 
-        # Train the model
-        model.train(X_subset, Y_subset)
+    train_error = 1 - accuracy_score(labels_train, train_predictions)               # error on the training set (number of incorrect predictions / total samples)
+    validation_error = 1 - accuracy_score(labels_test, validation_predictions)     # error on the testing set 
 
-        # Predict on training data
-        if model_type == "pytorch":
-            train_predictions = model.predict(X_subset).numpy()
-            test_predictions = model.predict(features_test).numpy()
-        else:
-            train_predictions = model.predict(X_subset)
-            test_predictions = model.predict(features_test)
-
-        # Calculate errors
-        train_error = 1 - accuracy_score(Y_subset, train_predictions)
-        test_error = 1 - accuracy_score(labels_test, test_predictions)
-
-        train_errors.append(train_error)
-        test_errors.append(test_error)
-
-    # Plot training and testing errors
-    plt.figure(figsize=(8, 6))
-    plt.plot(train_sizes, train_errors, label="Training Error", marker='o')
-    plt.plot(train_sizes, test_errors, label="Validation Error", marker='s')
-    plt.xlabel("Training Set Size")
-    plt.ylabel("Error")
-    plt.title("Bias-Variance Analysis")
-    plt.legend()
-    plt.grid(True)
-    plt.show()
-
-    print("\nBias-Variance Analysis Complete.")
+    print(f"Training Error: {train_error:.4f}")             # print training errors
+    print(f"Validation Error: {validation_error:.4f}")      # print validation errors
