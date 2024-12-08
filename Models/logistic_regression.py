@@ -16,7 +16,7 @@ class LogisticRegression(Model):
     def __init__(self, n_inputs, n_classes):
         self.model = LRModel(n_inputs, n_classes)
 
-    def train(self, X, Y, learning_rate=0.1, epochs=1000):
+    def train(self, X, Y, learning_rate=0.1, epochs=50000):
         # criterions: 
         # nn.CrossEntropyLoss() - evaluate as classification (ordinal doesnt matter)
         # nn.MSELoss() - evaluate as regression (classes dont matter much)
