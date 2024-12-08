@@ -15,7 +15,6 @@ def load_and_split(data_path):
     train_features, test_features, train_labels, test_labels = split_data(features, labels, test_size=0.2)      # split into train and test sets
     return train_features, test_features, train_labels, test_labels
 
-
 # main
 def main():
 
@@ -38,12 +37,22 @@ def main():
     svm = SupportVectorMachine()         # initialize support vector machine model
     nn = NeuralNetwork(feature_count=featureCount, label_count=labelCount)   # initialize neural network model
     lgrg = LogisticRegression()          # initailize logistic regression model
-    models = [svm, nn, lgrg]
+    models = {
+        'Support Vector Machine': svm, 
+        'Neural Network': nn, 
+        'Logistic Regression': lgrg,
+    }
 
-    #
-    for model in models:
+    # Training ( So that evaluation all comes at once )
+    for name, model in models.items():
+        print(f'Training {name}')
         model.train(train_features_processed, train_labels_processed)
+
+    # Evaluate
+    for name, model in models.items():
+        print(f'Evaluating {name}')
         model.evaluate(test_features_processed, test_labels_processed)
+
 
 if __name__=='__main__':
     main()
