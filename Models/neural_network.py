@@ -120,8 +120,4 @@ class NeuralNetwork(Model):
             recall = recall_score(labels, predictedLabels, average='weighted')
             f1 = f1_score(labels, predictedLabels, average='weighted')
 
-            # Report
-            print(f"Accuracy:   {accuracy*100:.2f}%")
-            print(f"Precision:  {precision:.4f}")
-            print(f"Recall:     {recall:.4f}")
-            print(f"F1-Score:   {f1:.4f}")
+            return accuracy, precision, recall, f1

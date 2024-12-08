@@ -51,8 +51,13 @@ def main():
     # Evaluate
     for name, model in models.items():
         print(f'Evaluating {name}')
-        model.evaluate(test_features_processed, test_labels_processed)
-
+        accuracy, precision, recall, f1 = model.evaluate(test_features_processed, test_labels_processed)
+        
+        # Report
+        print(f"Accuracy:   {accuracy*100:.2f}%")
+        print(f"Precision:  {precision:.4f}")
+        print(f"Recall:     {recall:.4f}")
+        print(f"F1-Score:   {f1:.4f}")
 
 if __name__=='__main__':
     main()
