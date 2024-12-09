@@ -122,9 +122,9 @@ def main():
     #
 
     # Save the models to a pickle file
-    if os.path.isdir('./pickle'):
+    if not os.path.isdir('./pickle'):
         os.mkdir('./pickle/')
-        
+
     for name, model in models.items():
         fname = './pickle/' + name.replace(' ', '').lower() + '.pkl'
         print(f'Writing {name} to Pickle File: {fname}')
