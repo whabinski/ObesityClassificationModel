@@ -9,9 +9,9 @@ Submission for McMaster University COMPSCI 4AL3 Group Project Milestone 2.
 
 ## Authors
 
-- Alex Eckardt - `eckardta` - [@alexeckardt](https://www.github.com/alexeckardt)
-- Wyatt Habinski - `habinskw` -[@whabinski](https://www.github.com/whabinski)
-- Eric Zhou - `zhoue16` -[@ericzz12](https://www.github.com/ericzz12)
+- Eckardt, Alex - `eckardta` - [@alexeckardt](https://www.github.com/alexeckardt)
+- Habinski, Wyatt - `habinskw` -[@whabinski](https://www.github.com/whabinski)
+- Zhou, Eric - `zhoue16` -[@ericzz12](https://www.github.com/ericzz12)
 ## Flow
 
 The program, found by running `./main.py`, works as follows.
