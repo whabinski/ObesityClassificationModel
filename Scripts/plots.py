@@ -1,16 +1,26 @@
+# Plot Metric function
+#
+# This function plots a training metric (loss, accuracy, etc.) over epochs for validation purposes
+# Parameters:
+# - metric_for_epoch: y values to plot
+# - metric_name: metric name as string for labeling 
+# - plot_as_log: boolean to plot function as log values
+
 import math
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot_metrics(train_metrics, metric_name, plot_as_log=False):
+def plot_metrics(metric_for_epoch, metric_name, plot_as_log=False):
 
     plt.figure(figsize=(8, 6))
-    epochs = np.arange(len(train_metrics))
+    epochs = np.arange(len(metric_for_epoch)) # x values
 
+    # log metric
     if plot_as_log:
-        train_metrics = [math.log(x) for x in train_metrics]
+        metric_for_epoch = [math.log(x) for x in metric_for_epoch]
 
-    plt.plot(epochs, train_metrics, label=f'Train {metric_name}', color='blue')
+    # plot metric over epoch
+    plt.plot(epochs, metric_for_epoch, label=f'Train {metric_name}', color='blue')
 
     plt.xlabel('Epochs')
     plt.ylabel(metric_name)

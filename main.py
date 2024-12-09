@@ -1,3 +1,7 @@
+# Main file
+#
+# 
+
 import numpy as np
 from Models.logistic_regression import LogisticRegression
 from Models.neural_network import NeuralNetwork

@@ -1,3 +1,11 @@
+# Evaluation Scripts
+#
+# This file contains functions used for evaluating our models.
+# Functions:
+# - evaluate_metrics: computes accuracy, precision, recall, f1 score, and confusion matrix given test labels and predictions
+# - evaluate_kfold: performs k-fold cross-validation and displays average accuracy, precision, recall, and f1 scores across folds
+# - evaluate_bias_variance: evaluates bias and variance and displays training and validation error
+
 import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix

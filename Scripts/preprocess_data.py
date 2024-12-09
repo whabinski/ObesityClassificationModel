@@ -1,3 +1,9 @@
+# Data Preprocessing Scripts
+# 
+# This file contains functions for preprocessing out data.
+# Functions:
+# - preprocess_features
+
 import numpy as np
 import pandas as pd
 
@@ -16,7 +22,7 @@ def preprocess_features(train_features, test_features, train_labels, test_labels
     categorical_columns = train_features.select_dtypes(include=['object', 'category']).columns.tolist()     # dynamically define categorical columns to be processed
     numerical_columns = train_features.select_dtypes(include=['number']).columns.tolist()                   # dynamically define numerical columns to be processed
 
-    # perform correltion analysis, and feature selection
+    # perform correlation analysis, and feature selection
     selected_categorical_columns, selected_numerical_columns = feature_selection(categorical_columns, numerical_columns, train_features, test_features, train_labels_processed)
 
     print(f"- Categorical: {len(selected_categorical_columns)} {selected_categorical_columns}")

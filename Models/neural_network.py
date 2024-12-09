@@ -19,6 +19,7 @@ from torch.utils.data import Dataset, DataLoader
 
 from Scripts.plots import plot_metrics
 
+# neural network using pytorch
 class NNChildClass(nn.Module):
     def __init__(self, feature_count, label_count):
         super(NNChildClass, self).__init__()
@@ -68,8 +69,7 @@ class CustomDataset(Dataset):
     def __getitem__(self, idx):
         return self.features[idx], self.labels[idx]
 
-
-
+# wrapper class for NNChildClass
 class NeuralNetwork(Model):
     def __init__(self, feature_count, label_count):
 
@@ -82,24 +82,26 @@ class NeuralNetwork(Model):
         self.feature_count = feature_count
         self.label_count = label_count
 
-    # Create 
+    # Create data loader
     def create_data_loader(self, features, labels):
         dataset = CustomDataset(features, labels)
         return DataLoader(dataset, batch_size=self.batch_size)
 
 
     def train(self, features, labels):
-
+        # initialize mode, optimizer, adn criterion
         self.model = NNChildClass(self.feature_count, self.label_count)
         self.optimizer = optim.SGD(self.model.parameters(), lr=self.learning_rate)
         self.criterion = nn.CrossEntropyLoss()
 
         model = self.model
-        model.train()
+        model.train() # train mode
 
         losses = []
-
+        # create data loader 
         data_loader = self.create_data_loader(features, labels)
+        
+        # training loop
         for epoch in range(self.epochs):
 
             # if epoch % 100 == 0:

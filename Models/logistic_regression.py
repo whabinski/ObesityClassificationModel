@@ -23,6 +23,7 @@ class LRModel(nn.Module):
     def forward(self, x):
         return self.linear(x).squeeze(-1) # squeeze to change shape from (n, 1) to (n,)
 
+# wrapper class for LRModel
 class LogisticRegression(Model): 
     def __init__(self, n_inputs, n_classes):
         self.n_inputs = n_inputs
