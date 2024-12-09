@@ -1,9 +1,20 @@
+# Logistic Regression model using pytorch
+# 
+# This script includes our logistic regression implementation 
+# The model uses cross-entropy loss as the loss function and 
+# stochastic gradient descent as the optimization algorithm.
+#
+# The LRModel class is a pytorch module that defines our logistic regression model
+# The LogisticRegression class extends from our Model class to train and predict with logistic regression
+# - takes number of inputs and number of classes as parameters when initializing
+
 from Models.model import Model
 
 import torch
 import torch.nn as nn
 import torch.optim as optim
 
+# logistic regression model using pytorch
 class LRModel(nn.Module):
     def __init__(self, n_inputs, n_classes):
         super(LRModel, self).__init__()
@@ -17,17 +28,17 @@ class LogisticRegression(Model):
         self.n_inputs = n_inputs
         self.n_classes = n_classes
         
-
     def train(self, X, Y, learning_rate=0.1, epochs=1000):
-        # criterions: 
-        # nn.CrossEntropyLoss() - evaluate as classification (ordinal doesnt matter)
-        # nn.MSELoss() - evaluate as regression (classes dont matter much)
+        # initialize model, criterion, and optimizer
         self.model = LRModel(self.n_inputs, self.n_classes)
         criterion = nn.CrossEntropyLoss()
         optimizer = optim.SGD(self.model.parameters(), lr=learning_rate)
+        
+        # convert numpy data to tensor
         X_ = torch.from_numpy(X).float()
         Y_ = torch.from_numpy(Y).long()
-
+        
+        # training loop
         for epoch in range(epochs):
             self.model.train()
             optimizer.zero_grad()
@@ -39,9 +50,13 @@ class LogisticRegression(Model):
             #     print(f'Epoch {epoch+1}/{epochs}: loss = {loss.item():.6f}')
 
     def predict(self, X):
+        # convert numpy data to tensor
         X_ = torch.from_numpy(X).float()
+
+        # evaluate
         self.model.eval()
         with torch.no_grad():
+            # get predictions
             outputs = self.model.forward(X_)
             _, predicted = torch.max(outputs.data, 1)
             return predicted 
