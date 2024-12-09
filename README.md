@@ -24,6 +24,10 @@ def load_models_sample(test_features_processed, featureCount, labelCount):
     predicted = svm.predict(test_features_processed)
 ```
 
+## Loading Discression
+The versions of Pickle, Scikit-learn, Torch and Numpy impact the ability to run this. The installed versions of each the above must match (to a certain degree) as to the ones that we compiled.
+    
+In the event you do not have the most current versions of each, you can run #the main file and the pickle files will be recreated, allowing you to load them in.
 
 ## Structure
 
