@@ -6,22 +6,27 @@
 # - evaluate_bias_variance: evaluates bias and variance and displays training and validation error
 
 import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+
+# Loading from Pickle
+from training import LogisticRegression, NeuralNetwork, SupportVectorMachine, SVM
+from sklearn.svm import SVC
 
 # funtion to evaluate performance of models using basic metrics; accuracy, precision, recall, f1, and confusion matrix
 def evaluate_metrics(test_labels, test_predictions):
-        accuracy = accuracy_score(test_labels, test_predictions)                                                # calucalte accuracy using sklearns accuracy method: proportion of correctly classified samples
-        precision = precision_score(test_labels, test_predictions, average='weighted', zero_division=0)         # calucalte precision using sklearns precision method: ratio of TP/TP+FP averaged over each class (weighted)
-        recall = recall_score(test_labels, test_predictions, average='weighted')                                # calucalte recall using sklearns recall method: ratio of TP/TP+FN averaged over each class (weighted)
-        f1 = f1_score(test_labels, test_predictions, average='weighted')                                        # calucalte f1 using sklearns f1 method: 2/ inv(precision) + inv(recall) averaged over each class (weighted)
-        cm = confusion_matrix(test_labels, test_predictions)                                                    # calucalte confusion matrix using sklearns confusion matrix method
-        
-        # print all metrics
-        print(f"- Accuracy: {accuracy:.4f}")
-        print(f"- Precision: {precision:.4f}")
-        print(f"- Recall: {recall:.4f}")
-        print(f"- F1-Score: {f1:.4f}")
-        print(f"Confusion Matrix:\n{cm}")
+    accuracy = accuracy_score(test_labels, test_predictions)                                                # calucalte accuracy using sklearns accuracy method: proportion of correctly classified samples
+    precision = precision_score(test_labels, test_predictions, average='weighted', zero_division=0)         # calucalte precision using sklearns precision method: ratio of TP/TP+FP averaged over each class (weighted)
+    recall = recall_score(test_labels, test_predictions, average='weighted')                                # calucalte recall using sklearns recall method: ratio of TP/TP+FN averaged over each class (weighted)
+    f1 = f1_score(test_labels, test_predictions, average='weighted')                                        # calucalte f1 using sklearns f1 method: 2/ inv(precision) + inv(recall) averaged over each class (weighted)
+    cm = confusion_matrix(test_labels, test_predictions)                                                    # calucalte confusion matrix using sklearns confusion matrix method
+
+    # print all metrics
+    print(f"- Accuracy: {accuracy:.4f}")
+    print(f"- Precision: {precision:.4f}")
+    print(f"- Recall: {recall:.4f}")
+    print(f"- F1-Score: {f1:.4f}")
+    print(f"Confusion Matrix:\n{cm}")
 
 # function to evaluate bias and variance
 def evaluate_bias_variance(labels_train, labels_test, train_predictions, validation_predictions):
@@ -49,7 +54,53 @@ def eval_bias_variance(models, train_labels_processed, test_labels_processed, tr
         # evaluate bias and variance
         evaluate_bias_variance(train_labels_processed, test_labels_processed, train_predictions[name], validation_predictions[name])
 
+
+def load_models():
+    
+    # Load in arrays
+    # svm = SupportVectorMachine(kernel='linear', C=1)
+    # nn = NeuralNetwork(1, 1) #will get overriden
+    # lr = LogisticRegression(1, 1) #will get overriden
+    
+    # #
+    # # Note: The versions of Pickle, Scikit-learn, Torch and Numpy
+    # # impact the ability to run this. The installed versions of each the above
+    # # must match (to a certain degree) as to the ones that we compiled.
+    # #
+    # # In the event you do not have the most current versions of each, you can run
+    # # the main file and the pickle files will be recreated, allowing you to load them in.
+    # # The current python version that created the pickle files was python 12.7
+    # #
+
+    svm = SupportVectorMachine.load('./pickle/supportvectormachine.pkl')
+    nn = NeuralNetwork.load('./pickle/neuralnetwork.pkl')
+    lr = LogisticRegression.load('./pickle/logisticregression.pkl')
+
+    return {
+        'Support Vector Machine': svm,
+        'Neural Network': nn,
+        'Logistic Regression': lr
+    }
+
 def main():
+    
+    models = load_models()
+
+    # Load in Data (Labels)
+    train_labels_processed = np.load('./Data/train_labels.npy')
+    test_labels_processed = np.load('./Data/test_labels.npy')
+
+    # Load in Data (Features)
+    train_features_processed = np.load('./Data/train_features.npy')
+    test_features_processed = np.load('./Data/test_features.npy')
+
+    # Perform Predictions
+    model_train_predictions = {}
+    model_test_predictions = {}
+    for name, model in models.items():
+        model_train_predictions[name] = np.array(model.predict(train_features_processed))
+        model_test_predictions[name] = np.array(model.predict(test_features_processed))
+
     # Evalaute using Test
     print('\n' + '=' * 60 + '\n')
     print("Beginning Bias-Variance Analysis")
@@ -61,3 +112,6 @@ def main():
     eval_metrics(models, model_test_predictions, test_labels_processed)              # evaluate metrics
 
     print('\n' + '=' * 60 + '\n')
+
+if __name__ == '__main__':
+    main()

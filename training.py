@@ -145,9 +145,9 @@ def preprocess_features(train_features, test_features, train_labels, test_labels
     
     # Save to Numpy Files
     np.save('./Data/train_features.npy', train_features_processed);
-    np.save('./Data/test_features.npy', train_labels_processed);
-    np.save('./Data/train_labels.npy', test_features_processed);
-    np.save('./Data/test_lables.npy', test_labels_processed);
+    np.save('./Data/test_features.npy', test_features_processed);
+    np.save('./Data/train_labels.npy', train_labels_processed);
+    np.save('./Data/test_labels.npy', test_labels_processed);
     print('Saved Train_features, train_labels, test_features, test_labels to .npy files')
 
     return train_features_processed, test_features_processed, train_labels_processed, test_labels_processed
@@ -210,12 +210,34 @@ class LogisticRegression():
             _, predicted = torch.max(outputs.data, 1)
             return predicted 
 
+
     def save(self, fname):
-        torch.save(self.model.state_dict(), fname)
+        with open(fname, 'wb') as f:
+            pickle.dump({
+                'model_state_dict': self.model.state_dict(),
+                'n_inputs': self.n_inputs,
+                'n_classes': self.n_classes,
+                }, f),
+            print(f'Saved Data to {fname}')
 
-    def load(self, fname):
-        self.model.load_state_dict(torch.load(fname))
+    @staticmethod
+    def load(fname):
+        with open(fname, 'rb') as f:
+            data_loaded = pickle.load(f)
 
+        weights = data_loaded['model_state_dict']
+        n_inputs = data_loaded['n_inputs']
+        n_classes = data_loaded['n_classes']
+
+        # Reconstruct the model
+        model = LRModel(n_inputs, n_classes)
+        model.load_state_dict(weights)
+
+        # Create the wrapper and populate its fields
+        wrapper = LogisticRegression(n_inputs, n_classes)
+        wrapper.model = model
+        print(f"Wrapper model loaded from {fname}")
+        return wrapper
 # Neural Network model using pytorch
 #
 # This includes our neural network implementation
@@ -350,10 +372,32 @@ class NeuralNetwork():
             return predictedLabels.detach().numpy() if isinstance(predictedLabels, torch.Tensor) else predictedLabels
         
     def save(self, fname):
-        torch.save(self.model.state_dict(), fname)
+        with open(fname, 'wb') as f:
+            pickle.dump({
+                'model_state_dict': self.model.state_dict(),
+                'feature_count': self.feature_count,
+                'label_count': self.label_count,
+                }, f),
+            print(f'Saved Data to {fname}')
 
-    def load(self, fname):
-        self.model.load_state_dict(torch.load(fname))
+    @staticmethod
+    def load(fname):
+        with open(fname, 'rb') as f:
+            data_loaded = pickle.load(f)
+
+        weights = data_loaded['model_state_dict']
+        feature_count = data_loaded['feature_count']
+        label_count = data_loaded['label_count']
+
+        # Reconstruct the model
+        model = NNChildClass(feature_count, label_count)
+        model.load_state_dict(weights)
+
+        # Create the wrapper and populate its fields
+        wrapper = NeuralNetwork(feature_count, label_count)
+        wrapper.model = model
+        print(f"Wrapper model loaded from {fname}")
+        return wrapper
 
 # SVM model using sklearn
 
@@ -394,12 +438,13 @@ class SupportVectorMachine():
     # save to pickle file
     def save(self, fname):
         with open(fname, 'wb') as f:
-            pickle.dump(self.model, f)
+            pickle.dump(self, f)
 
     # load from pickle
-    def load(self, fname):
+    @staticmethod
+    def load(fname):
         with open(fname, 'rb') as file:
-            self.model = pickle.load(file)
+            return pickle.load(file)
             
 #-------- Visualization -----------------------------------------------------------------------------------------
 
