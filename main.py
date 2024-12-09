@@ -81,8 +81,8 @@ def main():
 
     # Save the models to a pickle file
     for name, model in models.items():
-        fname = name.replace(' ', '').lower() + '.pkl'
-        print(f'Writing {name} to Pickle File: ./{fname}')
+        fname = './pickle/' + name.replace(' ', '').lower() + '.pkl'
+        print(f'Writing {name} to Pickle File: {fname}')
         model.save(fname)
 
 if __name__=='__main__':
