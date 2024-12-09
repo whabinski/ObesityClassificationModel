@@ -515,6 +515,16 @@ def eval_bias_variance(models, train_labels_processed, test_labels_processed, tr
         # evaluate bias and variance
         evaluate_bias_variance(train_labels_processed, test_labels_processed, train_predictions[name], validation_predictions[name])
 
+def savePickle(models):
+    # Save the models to a pickle file
+    if not os.path.isdir('./pickle'):
+        os.mkdir('./pickle/')
+
+    for name, model in models.items():
+        fname = './pickle/' + name.replace(' ', '').lower() + '.pkl'
+        print(f'Writing {name} to Pickle File: {fname}')
+        model.save(fname)
+
 # main
 def main():
 
@@ -568,6 +578,12 @@ def main():
     print("Beginning K-Fold Cross Validation")
     eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
     
+    #
+    # 5. Save to Pickle
+    #
+
+    savePickle(models)
+    
     # Evalaute using Test
     print('\n' + '=' * 60 + '\n')
     print("Beginning Bias-Variance Analysis")
@@ -579,21 +595,6 @@ def main():
     eval_metrics(models, model_test_predictions, test_labels_processed)              # evaluate metrics
 
     print('\n' + '=' * 60 + '\n')
-
-    #
-    # 5. Save to Pickle
-    #
-
-    # Save the models to a pickle file
-    if not os.path.isdir('./pickle'):
-        os.mkdir('./pickle/')
-
-    for name, model in models.items():
-        fname = './pickle/' + name.replace(' ', '').lower() + '.pkl'
-        print(f'Writing {name} to Pickle File: {fname}')
-        model.save(fname)
-
-    load_models_sample(test_features_processed, featureCount, labelCount)
 
 # Sample Loading each model from Pickle File.
 def load_models_sample(test_features_processed, featureCount, labelCount):
