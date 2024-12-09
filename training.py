@@ -127,6 +127,7 @@ def preprocess_features(train_features, test_features, train_labels, test_labels
     # perform correlation analysis, and feature selection
     selected_categorical_columns, selected_numerical_columns = feature_selection(categorical_columns, numerical_columns, train_features, test_features, train_labels_processed)
 
+    print(f"Columns after feature engineering:")
     print(f"- Categorical: {len(selected_categorical_columns)} {selected_categorical_columns}")
     print(f"- Numerical: {len(selected_numerical_columns)} {selected_numerical_columns}")
 
@@ -425,7 +426,6 @@ def trainModels(models, train_features_processed, train_labels_processed, test_f
     model_test_predictions = {}  # initialize empty dictionary to store train predictions for each model
 
     for name, model in models.items():                                      # iterate through all models
-        print('-' * 60)
         print(f"Training {name} model...") 
 
         # Train, Predict
@@ -521,20 +521,19 @@ def main():
     #
     # 1. Load Data & Split
     #
-    print('=' * 60)
-    print("Loading and Preprocessing Data...")
+    print('\n' + '=' * 60 + '\n')
+    print("Loading and splitting data...\n")
     data_path = "Data/ObesityDataSet_raw.csv"                                               # raw dataset path
     train_features, test_features, train_labels, test_labels = load_and_split(data_path)    # load data, split into train and test sets
-    print("Data successfully split into training and testing sets.")
-    
+
     #
     # 2. Preprocess Data
     #
 
     # preprocess train and test sets
+    print("Pre processing data...\n")
     train_features_processed, test_features_processed, train_labels_processed, test_labels_processed = preprocess_features(train_features, test_features, train_labels, test_labels)
-    print("Data successfully processed.")
-
+    
     # Define the Expected Input and Output dimensions for classification.
     # THese are technically constant.
     featureCount = train_features_processed.shape[1]
@@ -561,24 +560,25 @@ def main():
     #
     
     # Train models
+    print('\n' + '=' * 60 + '\n')
     model_train_predictions, model_test_predictions = trainModels(models, train_features_processed, train_labels_processed, test_features_processed)
 
     # Evaluate using training data
-    print('\n' + '=' * 60)
+    print('\n' + '=' * 60 + '\n')
     print("Beginning K-Fold Cross Validation")
     eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
     
     # Evalaute using Test
-    print('\n' + '=' * 60)
+    print('\n' + '=' * 60 + '\n')
     print("Beginning Bias-Variance Analysis")
     eval_bias_variance(models, train_labels_processed, test_labels_processed, model_train_predictions, model_test_predictions)       # evaluate bias and variance
     
     # Evalaute using Test
-    print('\n' + '=' * 60)
+    print('\n' + '=' * 60 + '\n')
     print("Beginning Metric Evaluations")
     eval_metrics(models, model_test_predictions, test_labels_processed)              # evaluate metrics
 
-    print('\n' + '=' * 60)
+    print('\n' + '=' * 60 + '\n')
 
     #
     # 5. Save to Pickle
