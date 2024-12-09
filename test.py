@@ -31,3 +31,33 @@ def evaluate_bias_variance(labels_train, labels_test, train_predictions, validat
 
     print(f"- Training Error: {train_error:.4f}")             # print training errors
     print(f"- Validation Error: {validation_error:.4f}")      # print validation errors
+
+# function to evaluate regular accuracy, precisoin, recall, f1, confusion matrix metrics
+def eval_metrics(models, test_predictions, test_labels_processed):
+    for name, model in models.items():                                      # iterate through all models
+        print('-' * 60)
+        print(f"Performing metric evaluation for {name}...") 
+        
+        # Evaluate
+        evaluate_metrics(test_labels_processed, test_predictions[name])                # calculate metrics
+
+# function to evaluate bias and variance
+def eval_bias_variance(models, train_labels_processed, test_labels_processed, train_predictions, validation_predictions):
+    for name, model in models.items():                                  # iterate through models
+        print('-' * 60)
+        print(f"Performing Bias-Variance Analysis for {name}...")
+        # evaluate bias and variance
+        evaluate_bias_variance(train_labels_processed, test_labels_processed, train_predictions[name], validation_predictions[name])
+
+def main():
+    # Evalaute using Test
+    print('\n' + '=' * 60 + '\n')
+    print("Beginning Bias-Variance Analysis")
+    eval_bias_variance(models, train_labels_processed, test_labels_processed, model_train_predictions, model_test_predictions)       # evaluate bias and variance
+    
+    # Evalaute using Test
+    print('\n' + '=' * 60 + '\n')
+    print("Beginning Metric Evaluations")
+    eval_metrics(models, model_test_predictions, test_labels_processed)              # evaluate metrics
+
+    print('\n' + '=' * 60 + '\n')
