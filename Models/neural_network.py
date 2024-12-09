@@ -75,7 +75,7 @@ class NeuralNetwork(Model):
 
         # Hyper Parameters
         self.learning_rate = 0.02
-        self.epochs = 1
+        self.epochs = 1000
         self.batch_size = 64
         
         # Loading

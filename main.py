@@ -71,7 +71,7 @@ def main():
     print("Data successfully split into training and testing sets.")
     
     #
-    # 2. Preprocess Data & Pre-split
+    # 2. Preprocess Data
     #
 
     # preprocess train and test sets
@@ -86,8 +86,6 @@ def main():
     #
     # 3. Initialize the Models
     #
-
-    load_models_sample(test_features_processed, featureCount, labelCount)
 
     # Initivalize Models
     svm = SupportVectorMachine(kernel='linear', C=1)                             # initialize support vector machine model
@@ -135,6 +133,7 @@ def main():
         print(f'Writing {name} to Pickle File: {fname}')
         model.save(fname)
 
+    load_models_sample(test_features_processed, featureCount, labelCount)
 
 # Sample Loading each model from Pickle File.
 def load_models_sample(test_features_processed, featureCount, labelCount):
@@ -150,6 +149,7 @@ def load_models_sample(test_features_processed, featureCount, labelCount):
     #
     # In the event you do not have the most current versions of each, you can run
     # the main file and the pickle files will be recreated, allowing you to load them in.
+    # The current python version that created the pickle files was python 12.7
     #
     svm.load('./pickle/supportvectormachine.pkl')
     nn.load('./pickle/neuralnetwork.pkl')

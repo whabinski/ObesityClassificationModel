@@ -2,19 +2,19 @@
 
 Submission for McMaster University COMPSCI 4AL3 Group Project Milestone 2.
 
-## To Run
-1. Install dependancies with `pip install -r ./requirements.txt`
-2. Run `main.py`.
-
 ## Authors
 - Eckardt, Alex - `eckardta` - [@alexeckardt](https://www.github.com/alexeckardt)
 - Habinski, Wyatt - `habinskw` -[@whabinski](https://www.github.com/whabinski)
 - Zhou, Eric - `zhoue16` -[@ericzz12](https://www.github.com/ericzz12)
 
+## To Run
+1. Install dependancies with `pip install -r ./requirements.txt`
+2. Need python version 12.7 to properly load pickle files
+3. Run `main.py`.
 
 ## Loading Pickle Files
 
-A class needs to be initialized. See the following code, or the function `load_models_sample()` in `main.py` for a sample code.
+The respective model needs to be initialized. See the following code, or the function `load_models_sample()` in `main.py` for a sample code.
 The inputted feature set must match the pre-processed format as created also in `main.py`.
 
 ```
