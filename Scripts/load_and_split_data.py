@@ -1,3 +1,12 @@
+# Load and Split Data Scripts
+#
+# This file contains functions to load and split our dataset
+# Functions:
+# - load_data: load csv data with pandas
+# - feature_engineering: engineer features to dataset (added bmi column)
+# - create_feature_and_target: add engineered features and assign features and label columns
+# - split_data: split dataset into train and test set
+
 import pandas as pd
 from Scripts.feature_engineering import add_bmi_column
 from sklearn.model_selection import train_test_split
