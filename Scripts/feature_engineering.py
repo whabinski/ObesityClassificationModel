@@ -1,3 +1,12 @@
+# Feature Engineering
+#
+# This file contains our feature engineering methods
+# Functions: 
+# - add_bmi_column: calculate bmi and add as column to dataset
+# - numerical_correlation_analysis: perform correlation analysis on numerical data
+# - categorical_correlation_analysis: perform correlation analysis on categorical data
+# - feature_selection: perform correlation analysis on all features and return feature selection
+
 import numpy as np
 import pandas as pd
 import seaborn as sns
