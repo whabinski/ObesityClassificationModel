@@ -12,17 +12,29 @@ class NNChildClass(nn.Module):
     def __init__(self, feature_count, label_count):
         super(NNChildClass, self).__init__()
         self.relu = nn.ReLU()
-        
+        self.dropout = nn.Dropout(0.3)  # Add regularization
+
         c = feature_count
-        self.fc1 = nn.Linear(c, c*2)
-        self.fc2 = nn.Linear(c*2, c)
+        self.fc1 = nn.Linear(c, c*3)
+        self.fc2 = nn.Linear(c*3, c*2)
+        self.fc3 = nn.Linear(c*2, c)
         self.classify = nn.Linear(c, label_count)
 
-    def forward(self, x):
-        x = self.relu(self.fc1(x))
-        x = self.relu(self.fc2(x))
-        x = self.relu(self.classify(x))
+        # Optionally add BatchNorm
+        self.bn1 = nn.BatchNorm1d(c * 3)
+        self.bn2 = nn.BatchNorm1d(c * 2)
+        self.bn3 = nn.BatchNorm1d(c)
 
+    def forward(self, x):
+        x = self.relu(self.bn1(self.fc1(x)))
+        x = self.dropout(x)
+        x = self.relu(self.bn2(self.fc2(x)))
+        x = self.dropout(x)
+        x = self.relu(self.bn3(self.fc3(x)))
+        x = self.dropout(x)
+
+        # Classify
+        x = self.classify(x)
         return x
 
 # Helper Function for laoding the the dataset
