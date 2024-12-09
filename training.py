@@ -300,7 +300,7 @@ class NeuralNetwork():
 
         # Hyper Parameters
         self.learning_rate = 0.02
-        self.epochs = 1
+        self.epochs = 1000
         self.batch_size = 64
         
         # Loading
@@ -616,37 +616,7 @@ def main():
     #
 
     savePickle(models)
-
-# Sample Loading each model from Pickle File.
-def load_models_sample(test_features_processed, featureCount, labelCount):
-
-    svm = SupportVectorMachine(kernel='linear', C=1)
-    nn = NeuralNetwork(featureCount, labelCount)
-    lr = LogisticRegression(featureCount,labelCount)
-
-    #
-    # Note: The versions of Pickle, Scikit-learn, Torch and Numpy
-    # impact the ability to run this. The installed versions of each the above
-    # must match (to a certain degree) as to the ones that we compiled.
-    #
-    # In the event you do not have the most current versions of each, you can run
-    # the main file and the pickle files will be recreated, allowing you to load them in.
-    # The current python version that created the pickle files was python 12.7
-    #
-    svm.load('./pickle/supportvectormachine.pkl')
-    nn.load('./pickle/neuralnetwork.pkl')
-    lr.load('./pickle/logisticregression.pkl')
-
-    predicted1 = svm.predict(test_features_processed)
-    predicted2 = nn.predict(test_features_processed)
-    predicted3 = lr.predict(test_features_processed)
-
-    print('Pickle Loaded SVM Predicted Classes:', predicted1[:10], '...')
-    print('Pickle Loaded NN Predicted Classes:', predicted2[:10], '...')
-    print('Pickle Loaded LR Predicted Classes:', predicted3[:10], '...')
-    return svm, nn, lr
-
-
+    
 #
 # Run Main Function
 #

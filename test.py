@@ -84,6 +84,7 @@ def load_models():
 
 def main():
     
+    # We have saved the pickle files in our own folder within the file structure so there is no need for you to move pickle files into file structure
     models = load_models()
 
     # Load in Data (Labels)
@@ -109,7 +110,7 @@ def main():
     # Evalaute using Test
     print('\n' + '=' * 60 + '\n')
     print("Beginning Metric Evaluations")
-    eval_metrics(models, model_test_predictions, test_labels_processed)              # evaluate metrics
+    eval_metrics(models, model_test_predictions, test_labels_processed)     # evaluate metrics
 
     print('\n' + '=' * 60 + '\n')
 
