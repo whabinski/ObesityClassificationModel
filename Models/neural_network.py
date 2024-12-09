@@ -1,3 +1,14 @@
+# Neural Network model using pytorch
+#
+# This script includes our neural network implementation
+# The model uses cross-entropy loss as the loss function and
+# stochastic gradient descent as the optimization algorithm.
+#
+# The NNChildClass class is a pytorch module that defines our neural network model
+# The CustomDataset class is a custom helper class for loading the dataset
+# The NeuralNetwork class extends from our Model class to train and predict using the neural network
+# - Initialize with number of features and number of labels
+
 from Models.model import Model
 import torch
 import torch.nn as nn

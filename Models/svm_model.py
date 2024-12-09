@@ -1,3 +1,13 @@
+# SVM model using sklearn
+
+# This script includes our SVM implementation
+# The model uses sklearn's fit method: using a quadratic programming
+# optimization function to optimize hinge loss
+#
+# The SVM class uses sklearn's SVM model 
+# The SupportVectorMachine class extends from our Model class to train and predict using SVM
+# - Initialize with kernel and C value
+
 import pickle
 from Models.model import Model
 from sklearn.svm import SVC
@@ -10,7 +20,7 @@ class SVM:
 
     # function to train the svm model using train features and train labels
     def fit(self, train_features, train_labels):
-        self.model.fit(train_features, train_labels)    # uses sklearns fit method: implements a quadratic programming optomization functioin to minimize hinge loss
+        self.model.fit(train_features, train_labels)    # uses sklearns fit method: implements a quadratic programming optimization function to minimize hinge loss
     
     # function to make predictions on features
     def forward(self, features):

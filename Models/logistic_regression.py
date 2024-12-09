@@ -5,8 +5,8 @@
 # stochastic gradient descent as the optimization algorithm.
 #
 # The LRModel class is a pytorch module that defines our logistic regression model
-# The LogisticRegression class extends from our Model class to train and predict with logistic regression
-# - takes number of inputs and number of classes as parameters when initializing
+# The LogisticRegression class extends from our Model class to train and predict using logistic regression
+# - Initialize with number of inputs and number of classes
 
 from Models.model import Model
 
