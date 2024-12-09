@@ -12,6 +12,19 @@ Submission for McMaster University COMPSCI 4AL3 Group Project Milestone 2.
 - Zhou, Eric - `zhoue16` -[@ericzz12](https://www.github.com/ericzz12)
 
 
+## Loading Pickle Files
+
+A class needs to be initialized. See the following code, or the function `load_models_sample()` in `main.py` for a sample code.
+The inputted feature set must match the pre-processed format as created also in `main.py`.
+
+```
+def load_models_sample(test_features_processed, featureCount, labelCount):
+    svm = SupportVectorMachine(kernel='linear', C=1)
+    svm.load('./pickle/supportvectormachine.pkl')
+    predicted = svm.predict(test_features_processed)
+```
+
+
 ## Structure
 
 1. Models Folder:

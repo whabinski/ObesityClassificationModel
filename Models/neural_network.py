@@ -75,12 +75,15 @@ class NeuralNetwork(Model):
 
         # Hyper Parameters
         self.learning_rate = 0.02
-        self.epochs = 1000
+        self.epochs = 1
         self.batch_size = 64
         
         # Loading
         self.feature_count = feature_count
         self.label_count = label_count
+
+        # Creatr as a base for loading  (otherwise will be overridden in training)
+        self.model = NNChildClass(self.feature_count, self.label_count)
 
     # Create data loader
     def create_data_loader(self, features, labels):

@@ -28,6 +28,9 @@ class LogisticRegression(Model):
     def __init__(self, n_inputs, n_classes):
         self.n_inputs = n_inputs
         self.n_classes = n_classes
+
+        # Create as a base for loading (otherwise will be overridden in training)
+        self.model = LRModel(self.n_inputs, self.n_classes)
         
     def train(self, X, Y, learning_rate=0.1, epochs=1000):
         # initialize model, criterion, and optimizer

@@ -8,7 +8,9 @@
 #       3. Initialize Models
 #       4. Perform evaluation metrics. For simiplification (as we perform K-fold Cross Validation), each metric will retrain the model.
 #       5. Save each model to a pickle file, found in `./pickle/(MODEL).pkl`.
-
+#
+#   Additionally, includes a smaple code for loading models out of the ./pickle folder.
+#
 import os
 import numpy as np
 
@@ -76,7 +78,8 @@ def main():
     train_features_processed, test_features_processed, train_labels_processed, test_labels_processed = preprocess_features(train_features, test_features, train_labels, test_labels)
     print("Data successfully processed.")
 
-    # Define the Expected Input and Output dimensions for classification
+    # Define the Expected Input and Output dimensions for classification.
+    # THese are technically constant.
     featureCount = train_features_processed.shape[1]
     labelCount = len(train_labels.unique())
 
@@ -84,16 +87,18 @@ def main():
     # 3. Initialize the Models
     #
 
+    load_models_sample(test_features_processed, featureCount, labelCount)
+
     # Initivalize Models
     svm = SupportVectorMachine(kernel='linear', C=1)                             # initialize support vector machine model
     nn = NeuralNetwork(feature_count=featureCount, label_count=labelCount)      # initialize neural network model
-    lgrg = LogisticRegression(featureCount,labelCount)                           # initailize logistic regression model
+    lr = LogisticRegression(featureCount,labelCount)                           # initailize logistic regression model
     
     # Save Model in a dictionary to simplify following steps
     models = {
         'Support Vector Machine': svm, 
         'Neural Network': nn, 
-        'Logistic Regression': lgrg,
+        'Logistic Regression': lr,
     }
     
     #
@@ -129,6 +134,36 @@ def main():
         fname = './pickle/' + name.replace(' ', '').lower() + '.pkl'
         print(f'Writing {name} to Pickle File: {fname}')
         model.save(fname)
+
+
+# Sample Loading each model from Pickle File.
+def load_models_sample(test_features_processed, featureCount, labelCount):
+
+    svm = SupportVectorMachine(kernel='linear', C=1)
+    nn = NeuralNetwork(featureCount, labelCount)
+    lr = LogisticRegression(featureCount,labelCount)
+
+    #
+    # Note: The versions of Pickle, Scikit-learn, Torch and Numpy
+    # impact the ability to run this. The installed versions of each the above
+    # must match (to a certain degree) as to the ones that we compiled.
+    #
+    # In the event you do not have the most current versions of each, you can run
+    # the main file and the pickle files will be recreated, allowing you to load them in.
+    #
+    svm.load('./pickle/supportvectormachine.pkl')
+    nn.load('./pickle/neuralnetwork.pkl')
+    lr.load('./pickle/logisticregression.pkl')
+
+    predicted1 = svm.predict(test_features_processed)
+    predicted2 = nn.predict(test_features_processed)
+    predicted3 = lr.predict(test_features_processed)
+
+    print('Pickle Loaded SVM Predicted Classes:', predicted1[:10], '...')
+    print('Pickle Loaded NN Predicted Classes:', predicted2[:10], '...')
+    print('Pickle Loaded LR Predicted Classes:', predicted3[:10], '...')
+    return svm, nn, lr
+
 
 #
 # Run Main Function
