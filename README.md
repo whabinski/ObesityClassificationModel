@@ -10,7 +10,9 @@ Submission for McMaster University COMPSCI 4AL3 Group Project Milestone 2.
 ## To Run
 1. Install dependancies with `pip install -r ./requirements.txt`
 2. Need python version 12.7 to properly load pickle files
-3. Run `main.py`.
+
+3. Run `training.py` to run training methods and load newest pickle models
+4. Run `test.py` to run evaluation methods using the loaded pickle files
 
 ## Loading Pickle Files
 
@@ -31,29 +33,16 @@ In the event you do not have the most current versions of each, you can run #the
 
 ## Structure
 
-;; 1. Models Folder:
-;;     - svm_model.py                          support vector machine class
-;;     - neural_network_model.py               neural network class
-;;     - logistic_regression_model.py          logistic regression class
-;;     - model.py
-
-;; 2. Scripts Folder
-;;     - evaluations.py                        evaluation / test methods
-;;     - feature_engineering.py                feature engineering technique methods
-;;     - load_and_slpit_data.py                load and split data into train and test methods
-;;     - plots.py                              plot data via graph methods
-;;     - preprocessing_data.py                 preprocess data methods
-
-;; 3. pickle Folder                            contains saved pickle models
-
-;; 4. Main                                     main start of program
-
 1. Data Folder
     - `ObesityDataSet_raw.csv` - raw dataset in  CSV.
     - `train_labels.npy` - 20% Split.
     - `train_features.npy` - post pre-processed feature selection. 80% Split.
     - `test_labels.npy` - 20% Split.
     - `test_features.npy` - post pre-processed feature selection. 20% Split.
+
+2. training.py
+
+3. test.py
 
 ## Training Flow
 
@@ -65,7 +54,7 @@ In the event you do not have the most current versions of each, you can run #the
 
 4. Train Models
 
-5. Re-train models using  K-fold Cross Validation, and see their metrics.
+5. Also train models using  K-fold Cross Validation, and see their metrics.
 
 6. Save each model to a pickle file, found in `./pickle/(MODEL).pkl`.
 
