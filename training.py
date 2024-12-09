@@ -18,8 +18,6 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from torch.utils.data import Dataset, DataLoader
 from sklearn.svm import SVC
 
-from test import evaluate_metrics, evaluate_bias_variance
-
 #-------- Load Data ---------------------------------------------------------------------------------------------
 # Load and Split Data Scripts
 
@@ -505,23 +503,6 @@ def eval_kfold(models, train_features_processed, train_labels_processed):
         print(f"Performing K-Fold Cross-Validation...")                        
         evaluate_kfold(model, train_features_processed, train_labels_processed, folds=5)    # perform kfold
 
-# function to evaluate regular accuracy, precisoin, recall, f1, confusion matrix metrics
-def eval_metrics(models, test_predictions, test_labels_processed):
-    for name, model in models.items():                                      # iterate through all models
-        print('-' * 60)
-        print(f"Performing metric evaluation for {name}...") 
-        
-        # Evaluate
-        evaluate_metrics(test_labels_processed, test_predictions[name])                # calculate metrics
-
-# function to evaluate bias and variance
-def eval_bias_variance(models, train_labels_processed, test_labels_processed, train_predictions, validation_predictions):
-    for name, model in models.items():                                  # iterate through models
-        print('-' * 60)
-        print(f"Performing Bias-Variance Analysis for {name}...")
-        # evaluate bias and variance
-        evaluate_bias_variance(train_labels_processed, test_labels_processed, train_predictions[name], validation_predictions[name])
-
 def savePickle(models):
     # Save the models to a pickle file
     if not os.path.isdir('./pickle'):
@@ -590,18 +571,6 @@ def main():
     #
 
     savePickle(models)
-    
-    # Evalaute using Test
-    print('\n' + '=' * 60 + '\n')
-    print("Beginning Bias-Variance Analysis")
-    eval_bias_variance(models, train_labels_processed, test_labels_processed, model_train_predictions, model_test_predictions)       # evaluate bias and variance
-    
-    # Evalaute using Test
-    print('\n' + '=' * 60 + '\n')
-    print("Beginning Metric Evaluations")
-    eval_metrics(models, model_test_predictions, test_labels_processed)              # evaluate metrics
-
-    print('\n' + '=' * 60 + '\n')
 
 # Sample Loading each model from Pickle File.
 def load_models_sample(test_features_processed, featureCount, labelCount):
