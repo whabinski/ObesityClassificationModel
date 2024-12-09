@@ -17,7 +17,8 @@ def load_and_split(data_path):
 # function to evaluate regular accuracy, precisoin, recall, f1, confusion matrix metrics
 def eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed):
     for name, model in models.items():                                      # iterate through all models
-        print(f"\nPerforming metric evaluation for {name}...") 
+        print('-' * 60)
+        print(f"Performing metric evaluation for {name}...") 
         model.train(train_features_processed, train_labels_processed)       # train the model on train data
         predictions = model.predict(test_features_processed)                # make predictions on test features
         evaluate_metrics(test_labels_processed, predictions)                # calculate metrics
@@ -25,19 +26,24 @@ def eval_normal(models, train_features_processed, train_labels_processed, test_f
 # function to perform kfold cross validation
 def eval_kfold(models, train_features_processed, train_labels_processed):
     for name, model in models.items():                                                      # iterate through models
-        print(f"\nPerforming K-Fold Cross-Validation for {name}...")                        
+        print('-' * 60)
+        print(f"{name}:\n")
+        print(f"Performing K-Fold Cross-Validation...")                        
         evaluate_kfold(model, train_features_processed, train_labels_processed, folds=5)    # perform kfold
 
 # function to evaluate bias and variance
 def eval_bias_variance(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed):
     for name, model in models.items():                                  # iterate through models
-        print(f"\nPerforming Bias-Variance Analysis for {name}...")
+        print('-' * 60)
+        print(f"Performing Bias-Variance Analysis for {name}...")
         # evaluate bias and variance
         evaluate_bias_variance(model, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)
 
 # main
 def main():
 
+    print('=' * 60)
+    print("Loading and Preprocessing Data...")
     data_path = "Data/ObesityDataSet_raw.csv"                                               # raw dataset path
     train_features, test_features, train_labels, test_labels = load_and_split(data_path)    # load data, split into train and test sets
     print("Data successfully split into training and testing sets.")
@@ -59,10 +65,18 @@ def main():
         'Neural Network': nn, 
         'Logistic Regression': lgrg,
     }
-
+    
     # Evaluate using training data
+    print('\n' + '=' * 60)
+    print("Beginning K-Fold Cross Validation")
     eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
+    
+    print('\n' + '=' * 60)
+    print("Beginning Bias-Variance Analysis")
     eval_bias_variance(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)       # evaluate bias and variance
+    
+    print('\n' + '=' * 60)
+    print("Beginning Metric Evaluations")
     eval_normal(models, train_features_processed, train_labels_processed, test_features_processed, test_labels_processed)              # evaluate metrics
 
     # Save the models to a pickle file

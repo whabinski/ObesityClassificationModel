@@ -81,10 +81,10 @@ class NeuralNetwork(Model):
         data_loader = self.create_data_loader(features, labels)
         for epoch in range(self.epochs):
 
-            if epoch % 100 == 0:
-                print(f'\nEpoch {epoch} ', end=' ')
-            elif epoch % 5 == 0:
-                print('.', end='')
+            # if epoch % 100 == 0:
+            #     print(f'\nEpoch {epoch} ', end=' ')
+            # elif epoch % 5 == 0:
+            #     print('.', end='')
 
             totalLoss = 0
             for X, Y in data_loader:

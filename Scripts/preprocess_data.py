@@ -19,8 +19,8 @@ def preprocess_features(train_features, test_features, train_labels, test_labels
     # perform correltion analysis, and feature selection
     selected_categorical_columns, selected_numerical_columns = feature_selection(categorical_columns, numerical_columns, train_features, test_features, train_labels_processed)
 
-    print(f"# categorical: {len(selected_categorical_columns)} {selected_categorical_columns}")
-    print(f"# numerical: {len(selected_numerical_columns)} {selected_numerical_columns}")
+    print(f"- Categorical: {len(selected_categorical_columns)} {selected_categorical_columns}")
+    print(f"- Numerical: {len(selected_numerical_columns)} {selected_numerical_columns}")
 
     # process (nominal) categorical columns using one hot encoding
     onehot_encoder = OneHotEncoder(sparse_output=False)                                                         # initialize one hot encoding
