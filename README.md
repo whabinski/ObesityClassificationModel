@@ -11,7 +11,6 @@ Submission for McMaster University COMPSCI 4AL3 Group Project Milestone 2.
 - Habinski, Wyatt - `habinskw` -[@whabinski](https://www.github.com/whabinski)
 - Zhou, Eric - `zhoue16` -[@ericzz12](https://www.github.com/ericzz12)
 
-
 ## Structure
 
 1. Models Folder:
@@ -20,14 +19,17 @@ Submission for McMaster University COMPSCI 4AL3 Group Project Milestone 2.
     - logistic_regression_model.py          logistic regression class
     - model.py
 
-2. Scripts
+2. Scripts Folder
     - evaluations.py                        evaluation / test methods
     - feature_engineering.py                feature engineering technique methods
     - load_and_slpit_data.py                load and split data into train and test methods
     - plots.py                              plot data via graph methods
     - preprocessing_data.py                 preprocess data methods
 
-3. Main                                     main start of program
+3. pickle Folder                            contains saved pickle models
+
+4. Main                                     main start of program
+
 
 ## Flow
 
