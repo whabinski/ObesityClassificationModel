@@ -2,8 +2,6 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
-RANDOM_SEED = 1561960643
-
 # funtion to evaluate performance of models using basic metrics; accuracy, precision, recall, f1, and confusion matrix
 def evaluate_metrics(test_labels, predictions):
         accuracy = accuracy_score(test_labels, predictions)                             # calucalte accuracy using sklearns accuracy method: proportion of correctly classified samples
@@ -22,7 +20,7 @@ def evaluate_metrics(test_labels, predictions):
 # function to perform k fold cross validation
 def evaluate_kfold(model, features, labels, folds):
 
-    kfolds = KFold(n_splits=folds, shuffle=True, random_state=RANDOM_SEED)                   # initialize sklearn's k-fold cross validation
+    kfolds = KFold(n_splits=folds, shuffle=True, random_state=42)                   # initialize sklearn's k-fold cross validation
 
     accuracy_list = []      # initialize empty list for accuracy scores per fold
     precision_list = []     # initialize empty list for precision scores per fold

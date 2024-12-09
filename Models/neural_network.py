@@ -11,21 +11,29 @@ from Scripts.plots import plot_metrics
 class NNChildClass(nn.Module):
     def __init__(self, feature_count, label_count):
         super(NNChildClass, self).__init__()
-        self.relu = nn.ReLU()
-        self.dropout = nn.Dropout(0.3)  # Add regularization
 
+        # Regularization Technique
+        self.droprate = 0.3
+        self.dropout = nn.Dropout(self.droprate)
+
+        # Activation Function
+        self.relu = nn.ReLU()
+
+        # Full Connected Architecture
         c = feature_count
         self.fc1 = nn.Linear(c, c*3)
         self.fc2 = nn.Linear(c*3, c*2)
         self.fc3 = nn.Linear(c*2, c)
         self.classify = nn.Linear(c, label_count)
 
-        # Optionally add BatchNorm
+        # Batch Normalization after each convolution
         self.bn1 = nn.BatchNorm1d(c * 3)
         self.bn2 = nn.BatchNorm1d(c * 2)
         self.bn3 = nn.BatchNorm1d(c)
 
     def forward(self, x):
+
+        #Passthrough -- Convolute, Normalize, Activate, Drop.
         x = self.relu(self.bn1(self.fc1(x)))
         x = self.dropout(x)
         x = self.relu(self.bn2(self.fc2(x)))
@@ -33,11 +41,11 @@ class NNChildClass(nn.Module):
         x = self.relu(self.bn3(self.fc3(x)))
         x = self.dropout(x)
 
-        # Classify
+        # Classify (No RELU)
         x = self.classify(x)
         return x
 
-# Helper Function for laoding the the dataset
+# Helper Class for laoding the the dataset
 class CustomDataset(Dataset):
     def __init__(self, features, labels):
         self.features = torch.tensor(features, dtype=torch.float32)  # Convert to PyTorch tensor
@@ -54,15 +62,17 @@ class CustomDataset(Dataset):
 class NeuralNetwork(Model):
     def __init__(self, feature_count, label_count):
 
+        # Hyper Parameters
         self.learning_rate = 0.02
         self.epochs = 1000
         self.batch_size = 64
         
+        # Loading
         self.feature_count = feature_count
         self.label_count = label_count
 
+    # Create 
     def create_data_loader(self, features, labels):
-
         dataset = CustomDataset(features, labels)
         return DataLoader(dataset, batch_size=self.batch_size)
 
