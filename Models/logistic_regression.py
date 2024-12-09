@@ -35,8 +35,8 @@ class LogisticRegression(Model):
             loss = criterion(outputs, Y_)
             loss.backward()
             optimizer.step()
-            if (epoch+1) % (epochs//10) == 0:
-                print(f'Epoch {epoch+1}/{epochs}: loss = {loss.item():.6f}')
+            # if (epoch+1) % (epochs//10) == 0:
+            #     print(f'Epoch {epoch+1}/{epochs}: loss = {loss.item():.6f}')
 
     def predict(self, X):
         X_ = torch.from_numpy(X).float()
