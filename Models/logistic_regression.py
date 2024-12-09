@@ -46,3 +46,8 @@ class LogisticRegression(Model):
             _, predicted = torch.max(outputs.data, 1)
             return predicted 
 
+    def save(self, fname):
+        torch.save(self.model.state_dict(), fname)
+
+    def load(self, fname):
+        self.model.load_state_dict(torch.load(fname))

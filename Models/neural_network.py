@@ -14,8 +14,8 @@ class NNChildClass(nn.Module):
         self.relu = nn.ReLU()
         
         c = feature_count
-        self.fc1 = nn.Linear(c, c*3)
-        self.fc2 = nn.Linear(c*3, c)
+        self.fc1 = nn.Linear(c, c*2)
+        self.fc2 = nn.Linear(c*2, c)
         self.classify = nn.Linear(c, label_count)
 
     def forward(self, x):
@@ -107,3 +107,9 @@ class NeuralNetwork(Model):
             # Convert to Predicted Score
             predictedLabels = torch.argmax(predictedLabels, dim=1)
             return predictedLabels.detach().numpy() if isinstance(predictedLabels, torch.Tensor) else predictedLabels
+        
+    def save(self, fname):
+        torch.save(self.model.state_dict(), fname)
+
+    def load(self, fname):
+        self.model.load_state_dict(torch.load(fname))
