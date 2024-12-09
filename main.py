@@ -3,7 +3,7 @@ from Models.logistic_regression import LogisticRegression
 from Models.neural_network import NeuralNetwork
 from Models.svm_model import SupportVectorMachine
 
-from Scripts.load_and_split_data import load_data, create_feature_and_target, split_data, RANDOM_SEED
+from Scripts.load_and_split_data import load_data, create_feature_and_target, split_data
 from Scripts.preprocess_data import preprocess_features
 from Scripts.evaluations import evaluate_metrics, evaluate_kfold, evaluate_bias_variance
 
