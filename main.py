@@ -100,7 +100,7 @@ def main():
     }
     
     #
-    # 4. Feature Analysis
+    # 4. Feature Analysis -- Including Trainig in each function
     #
 
     # Evaluate using training data
