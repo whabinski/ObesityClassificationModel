@@ -9,6 +9,7 @@
 #       4. Perform evaluation metrics. For simiplification (as we perform K-fold Cross Validation), each metric will retrain the model.
 #       5. Save each model to a pickle file, found in `./pickle/(MODEL).pkl`.
 
+import os
 import numpy as np
 
 from Models.logistic_regression import LogisticRegression
@@ -121,6 +122,9 @@ def main():
     #
 
     # Save the models to a pickle file
+    if os.path.isdir('./pickle'):
+        os.mkdir('./pickle/')
+        
     for name, model in models.items():
         fname = './pickle/' + name.replace(' ', '').lower() + '.pkl'
         print(f'Writing {name} to Pickle File: {fname}')
