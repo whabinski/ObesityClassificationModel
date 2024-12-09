@@ -145,6 +145,13 @@ def preprocess_features(train_features, test_features, train_labels, test_labels
     train_features_processed = np.hstack((train_categorical_encoded, train_numerical_scaled))       # combine processed categorical and numerical train set columns
     test_features_processed = np.hstack((test_categorical_encoded, test_numerical_scaled))          # combine processed categorical and numerical test set columns
     
+    # Save to Numpy Files
+    np.save('./Data/train_features.npy', train_features_processed);
+    np.save('./Data/test_features.npy', train_labels_processed);
+    np.save('./Data/train_labels.npy', test_features_processed);
+    np.save('./Data/test_lables.npy', test_labels_processed);
+    print('Saved Train_features, train_labels, test_features, test_labels to .npy files')
+
     return train_features_processed, test_features_processed, train_labels_processed, test_labels_processed
 
 #-------- Models ------------------------------------------------------------------------------------------------
