@@ -2,7 +2,8 @@
 # 
 # This file contains functions for preprocessing out data.
 # Functions:
-# - preprocess_features
+# - preprocess_features: process numeric and categorical data, apply feature selection, and normalize data
+# - verification: sanity check to verify preprocessed data
 
 import numpy as np
 import pandas as pd
