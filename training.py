@@ -47,7 +47,7 @@ def split_data(features, labels, test_size):
 #-------- Feature engineering  ----------------------------------------------------------------------------------
 #  correlation analysis, feature augmentation, feature selection
 
-SHOW_GRAPHS = False
+SHOW_GRAPHS = True
 
 # funciton to calculate bmi and add as new column to data
 def add_bmi_column(data):
@@ -258,12 +258,14 @@ class NNChildClass(nn.Module):
 
         # Full Connected Architecture
         c = feature_count
-        self.fc1 = nn.Linear(c, 60)
-        self.fc2 = nn.Linear(60, c)
+        z = 60
+        self.fc1 = nn.Linear(c, z)
+        self.fc2 = nn.Linear(z, c)
+        # self.fc3 = nn.Linear(c, c)
         self.classify = nn.Linear(c, label_count)
 
         # Batch Normalization after each convolution
-        self.bn1 = nn.BatchNorm1d(60)
+        self.bn1 = nn.BatchNorm1d(z)
         self.bn2 = nn.BatchNorm1d(c)
 
     def forward(self, x):
@@ -272,7 +274,10 @@ class NNChildClass(nn.Module):
         x = self.relu(self.bn1(self.fc1(x)))
         x = self.dropout(x)
         x = self.relu(self.bn2(self.fc2(x)))
-        x = self.dropout(x)
+        # x = self.dropout(x)
+
+        # x = self.relu(self.bn2(self.fc3(x)))
+        # No dropout before classification
 
         # Classify (No RELU)
         x = self.classify(x)
@@ -298,9 +303,12 @@ class NeuralNetwork():
         self.learning_rate = 0.3
         self.epochs = 1000
         self.batch_size = 128
-        self.lossThreshold = 0.001
-
         self.validationSize = 0.2
+
+        self.lossThreshold = 0.0001
+        self.deminishingReturnsCount = 10 # condition has to happen x times before we exit
+
+        self.meanLossWindow = 20
 
         # Loading
         self.feature_count = feature_count
@@ -333,6 +341,8 @@ class NeuralNetwork():
         trainLoader = self.create_data_loader(fTrain, lTrain)
         validLoader = self.create_data_loader(fValid, lValid)
         
+        deminisingEpochs = 0
+
         # training loop
         for epoch in range(self.epochs):
 
@@ -370,15 +380,27 @@ class NeuralNetwork():
             validLosses.append(totalValidLoss)
 
 
-            if (len(validLosses) > 1):
+            window = self.meanLossWindow
+            if (len(validLosses) > window*2):
 
-                a = validLosses[len(losses)-1]
-                b = validLosses[len(losses)-2]
+                # Get the average loss over the (-20th - -10th) vs the (-10ths vs the last) epoch
+                a = (validLosses[len(losses)-window*2:len(losses)-window]) 
+                b = (validLosses[len(losses)-window:len(losses)])
 
-                if (abs(a-b) < self.lossThreshold):
-                    #
-                    print(f'Early Stopping at epoch={epoch}/{self.epochs}')
-                    break
+                # avergae it
+                a = sum(a) / window
+                b = sum(b) / window
+
+                # if b (more recent) is larger -- exit as well. (deminishing returns)
+                if (abs(a - b) < self.lossThreshold or (a - b) < -0.02): 
+
+                    deminisingEpochs += 1
+                    if deminisingEpochs >= self.deminishingReturnsCount:
+                        print(f'Early Stopping at epoch={epoch}/{self.epochs} -- {a-b}')
+                        break
+
+                else:
+                    deminisingEpochs = 0 # reset counter
 
         # print('Finished Training')
         # print(f'Final Epoch Train Loss: {totalTrainLoss:.4f}')
@@ -484,8 +506,7 @@ class SupportVectorMachine():
 def plot_metrics(metric_for_epoch, metric_name, plot_as_log=False):
 
     if not SHOW_GRAPHS:
-        pass
-        # return;
+        return;
 
     plt.figure(figsize=(8, 6))
     epochs = np.arange(len(metric_for_epoch)) # x values
@@ -508,8 +529,7 @@ def plot_metrics(metric_for_epoch, metric_name, plot_as_log=False):
 def plot_losses(trainLoss, validLoss, plot_as_log=False):
 
     if not SHOW_GRAPHS:
-        pass
-        # return;
+        return;
 
     plt.figure(figsize=(8, 6))
     epochs = np.arange(len(trainLoss)) # x values
@@ -658,9 +678,9 @@ def main():
     
     # Save Model in a dictionary to simplify following steps
     models = {
-        # 'Support Vector Machine': svm, 
+        'Support Vector Machine': svm, 
         'Neural Network': nn, 
-        # 'Logistic Regression': lr,
+        'Logistic Regression': lr,
     }
     
     #
@@ -669,6 +689,8 @@ def main():
     
     # Train models
     print('\n' + '=' * 60 + '\n')
+    global SHOW_GRAPHS
+    # SHOW_GRAPHS = True
     model_train_predictions, model_test_predictions = trainModels(models, train_features_processed, train_labels_processed, test_features_processed)
 
     # SAVED THE MODEL INITIALLY
@@ -678,6 +700,7 @@ def main():
     # Evaluate using training data
     print('\n' + '=' * 60 + '\n')
     print("Beginning K-Fold Cross Validation")
+    SHOW_GRAPHS = False
     eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
     
     
