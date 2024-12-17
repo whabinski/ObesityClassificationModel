@@ -177,7 +177,7 @@ class LogisticRegression():
         # Create as a base for loading (otherwise will be overridden in training)
         self.model = LRModel(self.n_inputs, self.n_classes)
         
-    def train(self, X, Y, learning_rate=0.1, epochs=50000):
+    def train(self, X, Y, learning_rate=0.1, epochs=20000):
         # initialize model, criterion, and optimizer
         self.model = LRModel(self.n_inputs, self.n_classes)
         criterion = nn.CrossEntropyLoss()
@@ -188,6 +188,7 @@ class LogisticRegression():
         Y_ = torch.from_numpy(Y).long()
         
         # training loop
+        losses = []
         for epoch in range(epochs):
             self.model.train()
             optimizer.zero_grad()
@@ -195,8 +196,10 @@ class LogisticRegression():
             loss = criterion(outputs, Y_)
             loss.backward()
             optimizer.step()
+            losses.append(loss.item())
             # if (epoch+1) % (epochs//10) == 0:
             #     print(f'Epoch {epoch+1}/{epochs}: loss = {loss.item():.6f}')
+        plot_metrics(losses, 'Loss')
 
     def predict(self, X):
         # convert numpy data to tensor
@@ -658,9 +661,9 @@ def main():
     
     # Save Model in a dictionary to simplify following steps
     models = {
-        # 'Support Vector Machine': svm, 
+        'Support Vector Machine': svm, 
         'Neural Network': nn, 
-        # 'Logistic Regression': lr,
+        'Logistic Regression': lr,
     }
     
     #
