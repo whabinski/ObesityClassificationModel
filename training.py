@@ -65,10 +65,10 @@ def numerical_correlation_analysis(features, labels, threshold=0.1):
     selected_features = target_corr[abs(target_corr) >= threshold].index.tolist()       # select features with correlation greater than threshold
 
     # visualize scores via heatmap
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", fmt=".2f")
-    plt.title(f"Correlation Matrix with Threshold = {threshold}")
     if SHOW_GRAPHS: 
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", fmt=".2f")
+        plt.title(f"Correlation Matrix with Threshold = {threshold}")
         plt.show()
     
     return selected_features
@@ -88,13 +88,13 @@ def categorical_correlation_analysis(features, labels, threshold = 0.05):
     selected_categorical_features = mi_df[mi_df['Mutual Information'] > threshold]['Feature'].tolist()       # select features with correlation greater than threshold
     
     # visualization scores via barchart
-    plt.figure(figsize=(10, 6))
-    sns.barplot(x="Mutual Information", y="Feature", data=mi_df)
-    plt.title(f"Mutual Information Scores for Categorical Features with Threshold = {threshold}")
-    plt.xlabel("Mutual Information Score")
-    plt.ylabel("Features")
-    plt.tight_layout()
     if SHOW_GRAPHS: 
+        plt.figure(figsize=(10, 6))
+        sns.barplot(x="Mutual Information", y="Feature", data=mi_df)
+        plt.title(f"Mutual Information Scores for Categorical Features with Threshold = {threshold}")
+        plt.xlabel("Mutual Information Score")
+        plt.ylabel("Features")
+        plt.tight_layout()
         plt.show()
     
     return selected_categorical_features
@@ -258,15 +258,13 @@ class NNChildClass(nn.Module):
 
         # Full Connected Architecture
         c = feature_count
-        self.fc1 = nn.Linear(c, c*3)
-        self.fc2 = nn.Linear(c*3, c*2)
-        self.fc3 = nn.Linear(c*2, c)
+        self.fc1 = nn.Linear(c, 60)
+        self.fc2 = nn.Linear(60, c)
         self.classify = nn.Linear(c, label_count)
 
         # Batch Normalization after each convolution
-        self.bn1 = nn.BatchNorm1d(c * 3)
-        self.bn2 = nn.BatchNorm1d(c * 2)
-        self.bn3 = nn.BatchNorm1d(c)
+        self.bn1 = nn.BatchNorm1d(60)
+        self.bn2 = nn.BatchNorm1d(c)
 
     def forward(self, x):
 
@@ -274,8 +272,6 @@ class NNChildClass(nn.Module):
         x = self.relu(self.bn1(self.fc1(x)))
         x = self.dropout(x)
         x = self.relu(self.bn2(self.fc2(x)))
-        x = self.dropout(x)
-        x = self.relu(self.bn3(self.fc3(x)))
         x = self.dropout(x)
 
         # Classify (No RELU)
@@ -299,10 +295,13 @@ class NeuralNetwork():
     def __init__(self, feature_count, label_count):
 
         # Hyper Parameters
-        self.learning_rate = 0.02
+        self.learning_rate = 0.3
         self.epochs = 1000
-        self.batch_size = 64
-        
+        self.batch_size = 128
+        self.lossThreshold = 0.001
+
+        self.validationSize = 0.2
+
         # Loading
         self.feature_count = feature_count
         self.label_count = label_count
@@ -315,47 +314,80 @@ class NeuralNetwork():
         dataset = CustomDataset(features, labels)
         return DataLoader(dataset, batch_size=self.batch_size)
 
-
     def train(self, features, labels):
+
         # initialize mode, optimizer, adn criterion
         self.model = NNChildClass(self.feature_count, self.label_count)
         self.optimizer = optim.SGD(self.model.parameters(), lr=self.learning_rate)
         self.criterion = nn.CrossEntropyLoss()
 
         model = self.model
-        model.train() # train mode
 
+        # Keep track of losses
         losses = []
+        validLosses = []
+        
         # create data loader 
-        data_loader = self.create_data_loader(features, labels)
+        fTrain, fValid, lTrain, lValid = train_test_split(features, labels, test_size=self.validationSize)
+
+        trainLoader = self.create_data_loader(fTrain, lTrain)
+        validLoader = self.create_data_loader(fValid, lValid)
         
         # training loop
         for epoch in range(self.epochs):
 
-            # if epoch % 100 == 0:
-            #     print(f'\nEpoch {epoch} ', end=' ')
-            # elif epoch % 5 == 0:
-            #     print('.', end='')
+            if (epoch+1) % 100 == 0:
+                print(f'loss={losses[-1]:5f} | {losses[-2]:5f} \nEpoch {epoch} ', end=' ')
+            elif epoch % 5 == 0:
+                print('.', end='')
 
-            totalLoss = 0
-            for X, Y in data_loader:
+            totalTrainLoss = 0
+            model.train() # train mode
+            for X, Y in trainLoader:
 
                 predicted = model(X)
                 Y = Y.long()
                 loss = self.criterion(predicted, Y)
 
-                totalLoss += loss.item()
+                totalTrainLoss += loss.item()
 
                 # Backward pass and optimization
                 self.optimizer.zero_grad()  # Clear previous gradients
                 loss.backward()             # Backpropagate gradients
                 self.optimizer.step()       # Update weights
+            # Save
+            losses.append(totalTrainLoss)
 
-            losses.append(totalLoss)
+            model.eval()
+            totalValidLoss = 0
+            for X, Y in validLoader:
+                
+                predicted = model(X)
+                Y=Y.long()
+                loss = self.criterion(predicted, Y)
+
+                totalValidLoss += loss.item()
+            validLosses.append(totalValidLoss)
+
+
+            if (len(validLosses) > 1):
+
+                a = validLosses[len(losses)-1]
+                b = validLosses[len(losses)-2]
+
+                if (abs(a-b) < self.lossThreshold):
+                    #
+                    print(f'Early Stopping at epoch={epoch}/{self.epochs}')
+                    break
 
         # print('Finished Training')
-        # print(f'Final Epoch Train Loss: {totalLoss:.4f}')
-        # plot_metrics(losses, 'Loss', True)
+        # print(f'Final Epoch Train Loss: {totalTrainLoss:.4f}')
+        # d(losses, 'Loss', True)
+
+        # Plot
+        plot_losses(losses, validLosses, False);
+
+
     
 
     def predict(self, features):
@@ -451,6 +483,10 @@ class SupportVectorMachine():
 # This function plots a training metric (loss, accuracy, etc.) over epochs for validation purposes
 def plot_metrics(metric_for_epoch, metric_name, plot_as_log=False):
 
+    if not SHOW_GRAPHS:
+        pass
+        # return;
+
     plt.figure(figsize=(8, 6))
     epochs = np.arange(len(metric_for_epoch)) # x values
 
@@ -464,6 +500,35 @@ def plot_metrics(metric_for_epoch, metric_name, plot_as_log=False):
     plt.xlabel('Epochs')
     plt.ylabel(metric_name)
     plt.title(f'{metric_name} over Epochs')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+def plot_losses(trainLoss, validLoss, plot_as_log=False):
+
+    if not SHOW_GRAPHS:
+        pass
+        # return;
+
+    plt.figure(figsize=(8, 6))
+    epochs = np.arange(len(trainLoss)) # x values
+
+    # Assertion
+    assert len(trainLoss) == len(validLoss)
+
+    # log metric
+    if plot_as_log:
+        trainLoss = [math.log(x) for x in trainLoss]
+        validLoss = [math.log(x) for x in validLoss]
+
+    # plot metric over epoch
+    plt.plot(epochs, trainLoss, label=f'Train Loss', color='blue')
+    plt.plot(epochs, validLoss, label=f'Validation Loss', color='red')
+
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.title(f'Loss over Epochs')
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
@@ -593,9 +658,9 @@ def main():
     
     # Save Model in a dictionary to simplify following steps
     models = {
-        'Support Vector Machine': svm, 
+        # 'Support Vector Machine': svm, 
         'Neural Network': nn, 
-        'Logistic Regression': lr,
+        # 'Logistic Regression': lr,
     }
     
     #
@@ -606,16 +671,15 @@ def main():
     print('\n' + '=' * 60 + '\n')
     model_train_predictions, model_test_predictions = trainModels(models, train_features_processed, train_labels_processed, test_features_processed)
 
+    # SAVED THE MODEL INITIALLY
+    # 5. Save to Pickle
+    savePickle(models)
+
     # Evaluate using training data
     print('\n' + '=' * 60 + '\n')
     print("Beginning K-Fold Cross Validation")
     eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
     
-    #
-    # 5. Save to Pickle
-    #
-
-    savePickle(models)
     
 #
 # Run Main Function
