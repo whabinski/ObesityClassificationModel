@@ -177,11 +177,11 @@ class LogisticRegression():
         # Create as a base for loading (otherwise will be overridden in training)
         self.model = LRModel(self.n_inputs, self.n_classes)
         
-    def train(self, X, Y, learning_rate=0.1, epochs=1000):
+    def train(self, X, Y, learning_rate=0.1, epochs=50000):
         # initialize model, criterion, and optimizer
         self.model = LRModel(self.n_inputs, self.n_classes)
         criterion = nn.CrossEntropyLoss()
-        optimizer = optim.SGD(self.model.parameters(), lr=learning_rate)
+        optimizer = optim.SGD(self.model.parameters(), lr=learning_rate, weight_decay=0.001)
         
         # convert numpy data to tensor
         X_ = torch.from_numpy(X).float()
