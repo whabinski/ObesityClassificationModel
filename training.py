@@ -47,7 +47,7 @@ def split_data(features, labels, test_size):
 #-------- Feature engineering  ----------------------------------------------------------------------------------
 #  correlation analysis, feature augmentation, feature selection
 
-SHOW_GRAPHS = False
+SHOW_GRAPHS = True
 
 # funciton to calculate bmi and add as new column to data
 def add_bmi_column(data):
@@ -261,13 +261,15 @@ class NNChildClass(nn.Module):
 
         # Full Connected Architecture
         c = feature_count
-        self.fc1 = nn.Linear(c, 60)
-        self.fc2 = nn.Linear(60, c)
+        z = 60
+        self.fc1 = nn.Linear(c, z)
+        self.fc2 = nn.Linear(z, c)
         self.classify = nn.Linear(c, label_count)
 
         # Batch Normalization after each convolution
-        self.bn1 = nn.BatchNorm1d(60)
+        self.bn1 = nn.BatchNorm1d(z)
         self.bn2 = nn.BatchNorm1d(c)
+        # self.bn3 = nn.BatchNorm1d(c)
 
     def forward(self, x):
 
@@ -276,6 +278,8 @@ class NNChildClass(nn.Module):
         x = self.dropout(x)
         x = self.relu(self.bn2(self.fc2(x)))
         x = self.dropout(x)
+        # x = self.relu(self.bn3(self.fc3(x)))
+        # x = self.dropout(x)
 
         # Classify (No RELU)
         x = self.classify(x)
@@ -298,12 +302,17 @@ class NeuralNetwork():
     def __init__(self, feature_count, label_count):
 
         # Hyper Parameters
-        self.learning_rate = 0.3
+        self.learning_rate = 0.1
         self.epochs = 1000
         self.batch_size = 128
-        self.lossThreshold = 0.001
-
         self.validationSize = 0.2
+
+        self.meanLossWindow = 5
+        self.deminishingReturnsCount = 30 # condition has to happen x times before we exit
+
+        self.minEpochsBeforeStop = 50        
+        self.lossThreshold = 0.005
+        self.ejectDifference = 0.04 # if difference is less than this (bigger in negative), we exit training.
 
         # Loading
         self.feature_count = feature_count
@@ -332,15 +341,17 @@ class NeuralNetwork():
         
         # create data loader 
         fTrain, fValid, lTrain, lValid = train_test_split(features, labels, test_size=self.validationSize)
-
         trainLoader = self.create_data_loader(fTrain, lTrain)
         validLoader = self.create_data_loader(fValid, lValid)
         
+        deminisingEpochs = 0
+        window = self.meanLossWindow
+
         # training loop
         for epoch in range(self.epochs):
 
             if (epoch+1) % 100 == 0:
-                print(f'loss={losses[-1]:5f} | {losses[-2]:5f} \nEpoch {epoch} ', end=' ')
+                print(f'loss/item={losses[-1]:5f} | {losses[-2]:5f} \nEpoch {epoch} ', end=' ')
             elif epoch % 5 == 0:
                 print('.', end='')
 
@@ -373,14 +384,33 @@ class NeuralNetwork():
             validLosses.append(totalValidLoss)
 
 
-            if (len(validLosses) > 1):
+            # Early Stopping / Window-based checks
+            if epoch >= self.minEpochsBeforeStop and len(validLosses) >= 2 * window:
+                # The last "window" epochs
+                recent_window = validLosses[-window:]
+                # The previous "window" epochs
+                prev_window = validLosses[-2*window:-window]
 
-                a = validLosses[len(losses)-1]
-                b = validLosses[len(losses)-2]
+                curr_mean = sum(recent_window) / window
+                prev_mean = sum(prev_window) / window
 
-                if (abs(a-b) < self.lossThreshold):
-                    #
-                    print(f'Early Stopping at epoch={epoch}/{self.epochs}')
+                #  If validation loss has gotten significantly worse
+                if (curr_mean - prev_mean) > self.ejectDifference:
+                    print(f'Early Stopping due to regression at epoch={epoch}/{self.epochs} '
+                        f'(mean valid loss went from {prev_mean:.5f} to {curr_mean:.5f})')
+                    break
+
+                #If improvement is less than a small threshold
+                improvement = prev_mean - curr_mean
+                if improvement < self.lossThreshold:
+                    deminisingEpochs += 1
+                else:
+                    deminisingEpochs = 0  # reset if we see decent improvement this epoch
+
+                # If we've stagnated for multiple windows in a row, stop
+                if deminisingEpochs >= self.deminishingReturnsCount:
+                    print(f'Early Stopping due to stagnation at epoch={epoch}/{self.epochs} '
+                        f'(mean valid loss plateaued at ~{curr_mean:.5f})')
                     break
 
         # print('Finished Training')
@@ -389,9 +419,6 @@ class NeuralNetwork():
 
         # Plot
         plot_losses(losses, validLosses, False);
-
-
-    
 
     def predict(self, features):
         # Model switch
@@ -487,8 +514,7 @@ class SupportVectorMachine():
 def plot_metrics(metric_for_epoch, metric_name, plot_as_log=False):
 
     if not SHOW_GRAPHS:
-        pass
-        # return;
+        return;
 
     plt.figure(figsize=(8, 6))
     epochs = np.arange(len(metric_for_epoch)) # x values
@@ -511,8 +537,7 @@ def plot_metrics(metric_for_epoch, metric_name, plot_as_log=False):
 def plot_losses(trainLoss, validLoss, plot_as_log=False):
 
     if not SHOW_GRAPHS:
-        pass
-        # return;
+        return;
 
     plt.figure(figsize=(8, 6))
     epochs = np.arange(len(trainLoss)) # x values
@@ -672,6 +697,8 @@ def main():
     
     # Train models
     print('\n' + '=' * 60 + '\n')
+    global SHOW_GRAPHS
+    # SHOW_GRAPHS = True
     model_train_predictions, model_test_predictions = trainModels(models, train_features_processed, train_labels_processed, test_features_processed)
 
     # SAVED THE MODEL INITIALLY
@@ -681,6 +708,7 @@ def main():
     # Evaluate using training data
     print('\n' + '=' * 60 + '\n')
     print("Beginning K-Fold Cross Validation")
+    SHOW_GRAPHS = False
     eval_kfold(models, train_features_processed, train_labels_processed)                                                               # evaluate kfold
     
     
