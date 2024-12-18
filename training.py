@@ -199,7 +199,7 @@ class LogisticRegression():
             losses.append(loss.item())
             # if (epoch+1) % (epochs//10) == 0:
             #     print(f'Epoch {epoch+1}/{epochs}: loss = {loss.item():.6f}')
-        plot_metrics(losses, 'Loss')
+        plot_metrics(losses, 'Loss', "Linear Regression")
 
     def predict(self, X):
         # convert numpy data to tensor
@@ -241,6 +241,7 @@ class LogisticRegression():
         wrapper.model = model
         print(f"Wrapper model loaded from {fname}")
         return wrapper
+    
 # Neural Network model using pytorch
 #
 # This includes our neural network implementation
@@ -350,10 +351,12 @@ class NeuralNetwork():
         # training loop
         for epoch in range(self.epochs):
 
+            '''
             if (epoch+1) % 100 == 0:
                 print(f'loss/item={losses[-1]:5f} | {losses[-2]:5f} \nEpoch {epoch} ', end=' ')
             elif epoch % 5 == 0:
                 print('.', end='')
+            '''
 
             totalTrainLoss = 0
             model.train() # train mode
@@ -396,8 +399,8 @@ class NeuralNetwork():
 
                 #  If validation loss has gotten significantly worse
                 if (curr_mean - prev_mean) > self.ejectDifference:
-                    print(f'Early Stopping due to regression at epoch={epoch}/{self.epochs} '
-                        f'(mean valid loss went from {prev_mean:.5f} to {curr_mean:.5f})')
+                    print(f'Early Stopping due to regression at epoch={epoch}/{self.epochs} ')
+                        #f'(mean valid loss went from {prev_mean:.5f} to {curr_mean:.5f})')
                     break
 
                 #If improvement is less than a small threshold
@@ -418,7 +421,7 @@ class NeuralNetwork():
         # d(losses, 'Loss', True)
 
         # Plot
-        plot_losses(losses, validLosses, False);
+        plot_losses(losses, validLosses, "Neural Network", False);
 
     def predict(self, features):
         # Model switch
@@ -511,7 +514,7 @@ class SupportVectorMachine():
 #-------- Visualization -----------------------------------------------------------------------------------------
 
 # This function plots a training metric (loss, accuracy, etc.) over epochs for validation purposes
-def plot_metrics(metric_for_epoch, metric_name, plot_as_log=False):
+def plot_metrics(metric_for_epoch, metric_name, model, plot_as_log=False):
 
     if not SHOW_GRAPHS:
         return;
@@ -528,13 +531,13 @@ def plot_metrics(metric_for_epoch, metric_name, plot_as_log=False):
 
     plt.xlabel('Epochs')
     plt.ylabel(metric_name)
-    plt.title(f'{metric_name} over Epochs')
+    plt.title(f'{model} {metric_name} over Epochs')
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
     plt.show()
 
-def plot_losses(trainLoss, validLoss, plot_as_log=False):
+def plot_losses(trainLoss, validLoss, model ,plot_as_log=False):
 
     if not SHOW_GRAPHS:
         return;
@@ -556,7 +559,7 @@ def plot_losses(trainLoss, validLoss, plot_as_log=False):
 
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
-    plt.title(f'Loss over Epochs')
+    plt.title(f'{model} Loss over Epochs')
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
