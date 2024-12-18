@@ -51,7 +51,7 @@ def split_data(features, labels, test_size):
 #-------- Feature engineering  ----------------------------------------------------------------------------------
 #  correlation analysis, feature augmentation, feature selection
 
-SHOW_GRAPHS = True
+SHOW_GRAPHS = False
 
 # funciton to calculate bmi and add as new column to data
 def add_bmi_column(data):
@@ -678,6 +678,7 @@ def eval_kfold(models, train_features_processed, train_labels_processed):
         evaluate_kfold(model, train_features_processed, train_labels_processed, folds=5)    # perform kfold
 
 def savePickle(models):
+    print("\n")
     # Save the models to a pickle file
     if not os.path.isdir('./pickle'):
         os.mkdir('./pickle/')
@@ -716,7 +717,7 @@ def main():
     #
 
     # Initivalize Models
-    svm = SupportVectorMachine(kernel='linear', C=1)                             # initialize support vector machine model
+    svm = SupportVectorMachine(kernel='rbf', C=5)                             # initialize support vector machine model
     nn = NeuralNetwork(feature_count=featureCount, label_count=labelCount)      # initialize neural network model
     lr = LogisticRegression(featureCount,labelCount)                           # initailize logistic regression model
     
