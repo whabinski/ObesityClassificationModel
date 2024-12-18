@@ -12,7 +12,7 @@ import os
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import mutual_info_classif
-from sklearn.preprocessing import OneHotEncoder, LabelEncoder, StandardScaler
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder, StandardScaler, MinMaxScaler
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 from torch.utils.data import Dataset, DataLoader
@@ -47,7 +47,7 @@ def split_data(features, labels, test_size):
 #-------- Feature engineering  ----------------------------------------------------------------------------------
 #  correlation analysis, feature augmentation, feature selection
 
-SHOW_GRAPHS = True
+SHOW_GRAPHS = False
 
 # funciton to calculate bmi and add as new column to data
 def add_bmi_column(data):
@@ -134,7 +134,8 @@ def preprocess_features(train_features, test_features, train_labels, test_labels
     train_categorical_encoded = onehot_encoder.fit_transform(train_features[selected_categorical_columns])      # fit and apply encoder to training set
     test_categorical_encoded = onehot_encoder.transform(test_features[selected_categorical_columns])            # apply encoder to test set
 
-    # process numerical columns using standard scalar
+    # process numerical columns using standard scalar or min max scalar
+    #scaler = MinMaxScaler()                                                                                 # initialize min max scalar
     scaler = StandardScaler()                                                                               # initialize standard scalar
     train_numerical_scaled = scaler.fit_transform(train_features[selected_numerical_columns])               # fit and apply scalar to training set
     test_numerical_scaled = scaler.transform(test_features[selected_numerical_columns])                     # apply scalar to test set
