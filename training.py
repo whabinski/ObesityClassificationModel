@@ -38,6 +38,10 @@ def create_feature_and_target(data):
     labels = engineered_data["NObeyesdad"]                         # assign label coloumn
     return features, labels
 
+def sample_technique(features, labels):
+    sampled_features, sampled_labels = undersample_classes(features,labels)
+    return sampled_features, sampled_labels
+
 # function to split dataset into training and testing sets
 def split_data(features, labels, test_size):
     # split dataset into train and test sets
@@ -107,7 +111,34 @@ def feature_selection(categorical_columns, numerical_columns, train_features, te
     selected_categorical_features = categorical_correlation_analysis(train_features[categorical_columns], train_labels, threshold=0.1)     # correlation analysis on numerical features
     
     return selected_categorical_features, selected_numerical_features   # return feature columns
+
+# function to create class sizes equal to the smallest class
+def undersample_classes(features, labels):
+ 
+    data = pd.concat([features, labels], axis=1)                    # combine features and labels into a single DataFrame
+    label_column = labels.name                                      # name of the labels column
+
+    class_counts = labels.value_counts()                            # counts for each class
+    smallest_class_size = labels.value_counts().min()               # size of the smallest class
+
+    balanced_data = []                                              # initialize empty list to store undersampled data
+
+    for class_label in labels.unique():                             # iterate over all unique classes
+        class_data = data[data[label_column] == class_label]                                # filter for rows of the current class
+        balanced_data.append(class_data.sample(n=smallest_class_size, random_state=42))     # append reduced sample size to list of balanced data
+
+    balanced_data = pd.concat(balanced_data, axis=0).reset_index(drop=True)         # concatenate all the balanced data
     
+    balanced_features = balanced_data.drop(columns=[label_column])                  # separate the features
+    balanced_labels = balanced_data[label_column]                                   # seperate labels
+    
+    total_removed = (class_counts.sum()) - (smallest_class_size * len(class_counts))  # Total samples removed
+    print(f"Smallest class sample size: {smallest_class_size}, removed {total_removed} samples total\n")
+    
+    return balanced_features, balanced_labels
+
+
+
 
 #-------- Preprocessing  ----------------------------------------------------------------------------------------
 
@@ -634,6 +665,7 @@ def evaluate_kfold(model, features, labels, folds):
 def load_and_split(data_path):
     data = load_data(data_path)                                                                                 # load raw csv data
     features, labels = create_feature_and_target(data)                                                          # seperate features and labels
+    #features, labels = sample_technique(features, labels)                                                      # reduce class sizes to be equal
     train_features, test_features, train_labels, test_labels = split_data(features, labels, test_size=0.2)      # split into train and test sets
     return train_features, test_features, train_labels, test_labels
 
@@ -662,7 +694,7 @@ def main():
     # 1. Load Data & Split
     #
     print('\n' + '=' * 60 + '\n')
-    print("Loading and splitting data...\n")
+    print("Loading, balancing, and splitting data...\n")
     data_path = "Data/ObesityDataSet_raw.csv"                                               # raw dataset path
     train_features, test_features, train_labels, test_labels = load_and_split(data_path)    # load data, split into train and test sets
 
