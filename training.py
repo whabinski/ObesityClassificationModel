@@ -717,9 +717,9 @@ def main():
     #
 
     # Initivalize Models
-    svm = SupportVectorMachine(kernel='rbf', C=5)                             # initialize support vector machine model
+    svm = SupportVectorMachine(kernel='rbf', C=5)                               # initialize support vector machine model
     nn = NeuralNetwork(feature_count=featureCount, label_count=labelCount)      # initialize neural network model
-    lr = LogisticRegression(featureCount,labelCount)                           # initailize logistic regression model
+    lr = LogisticRegression(featureCount,labelCount)                            # initailize logistic regression model
     
     # Save Model in a dictionary to simplify following steps
     models = {

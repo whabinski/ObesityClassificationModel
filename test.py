@@ -54,6 +54,29 @@ def eval_bias_variance(models, train_labels_processed, test_labels_processed, tr
         # evaluate bias and variance
         evaluate_bias_variance(train_labels_processed, test_labels_processed, train_predictions[name], validation_predictions[name])
 
+# function to comparitively plot metrics of 2 differnt models using a bar chart
+def plot_compare_metrics(title, metrics_model_old, metrics_model_new, old_name="Old", new_name="New"):
+
+    labels = list(metrics_model_old.keys())                 # metric labels
+    old_values = list(metrics_model_old.values())           # old values
+    new_values = list(metrics_model_new.values())           # new values
+    
+    x = np.arange(len(labels))              
+    width = 0.35                            # width of the bars
+    
+    fig, ax = plt.subplots(figsize=(8, 6))                                      # create the sub plots
+    ax.bar(x - width/2, old_values, width, label=old_name, color='blue')        # plot blue / old values
+    ax.bar(x + width/2, new_values, width, label=new_name, color='red')         # plot red  / new values
+    
+    ax.set_xlabel('Metrics')            # x axis title
+    ax.set_ylabel('Scores')             # y axis title
+    ax.set_title(title)                 # plot title
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels)
+    ax.legend()
+    
+    plt.tight_layout()          # tight layout
+    plt.show()                  # Show the plot
 
 def load_models():
     
@@ -113,6 +136,11 @@ def main():
     eval_metrics(models, model_test_predictions, test_labels_processed)     # evaluate metrics
 
     print('\n' + '=' * 60 + '\n')
+    
+    metrics_model_old = {'Accuracy': 0.92, 'Precision': 0.88, 'Recall': 0.90, 'F1-Score': 0.89, 'Training Error': 0.0231, 'Validation Error': 0.0355}
+    metrics_model_new = {'Accuracy': 0.87, 'Precision': 0.85, 'Recall': 0.86, 'F1-Score': 0.85, 'Training Error': 0.0231, 'Validation Error': 0.0355}
+
+    plot_compare_metrics("SVM Hyperparameters Change", metrics_model_old, metrics_model_new)
 
 if __name__ == '__main__':
     main()
