@@ -137,9 +137,6 @@ def undersample_classes(features, labels):
     
     return balanced_features, balanced_labels
 
-
-
-
 #-------- Preprocessing  ----------------------------------------------------------------------------------------
 
 # function to preprocess train and test sets

@@ -8,9 +8,9 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
-# Loading from Pickle
 from training import LogisticRegression, NeuralNetwork, SupportVectorMachine, SVM
 from sklearn.svm import SVC
 
@@ -95,6 +95,29 @@ def plot_confusion_matrix(true_labels, predicted_labels, class_names, model):
     plt.tight_layout()              # tight layout
     plt.show()                      # show plot
 
+# function to identify and return indecies of misclassified samples
+def get_misclassified_indices(true_labels, predicted_labels):
+    return np.where(true_labels != predicted_labels)[0]
+
+# function to identify and return indecies of correctly classified samples
+def get_correctly_classified_indices(true_labels, predicted_labels):
+    return np.where(true_labels == predicted_labels)[0]
+
+# function to return predictions made by each model for a respective sample number
+def get_predictied_sample(sample_index, test_features_processed, test_labels_processed, models):
+    
+    sample_features = test_features_processed[sample_index].reshape(1, -1)  # get sample from the preprocessed test dataset
+
+    true_label = test_labels_processed[sample_index]    # get true label
+
+    sample_predictions = {}                             # initialize cictionary to store predictions
+
+    for name, model in models.items():                  # iterate through all models
+        prediction = model.predict(sample_features)     # predict the sample
+        sample_predictions[name] = prediction           # store to dictionary
+        print(f"Model: {name}, Predicted Label: {prediction[0]}, True Label: {true_label}")     # print comparison
+    
+
 def load_models():
     
     # Load in arrays
@@ -154,27 +177,44 @@ def main():
 
     print('\n' + '=' * 60 + '\n')
     
+    # old svm hyperparameter metric scores
     svm_old_hyperparameters = {'Accuracy': 0.9385, 'Precision': 0.9420, 'Recall': 0.9385, 'F1-Score': 0.9376, 'Training Error': 0.0355, 'Validation Error': 0.0615}
+    # new svm hyperparameter metric scores
     svm_new_hyperparameters = {'Accuracy': 0.9504, 'Precision': 0.9538, 'Recall': 0.9504, 'F1-Score': 0.9498, 'Training Error': 0.0113, 'Validation Error': 0.0496}
     svm_hyperparameter_graph_title = "SVM Hyperparameters Change"
     
+    # old nn hyperparameter metric scores
     nn_old_hyperparameters = {'Accuracy': 0.9267, 'Precision': 0.9378, 'Recall': 0.9267, 'F1-Score': 0.9251, 'Training Error': 0.0249, 'Validation Error': 0.0733}
+    # new nn hyperparameter metric scores
     nn_new_hyperparameters = {'Accuracy': 0.9409, 'Precision': 0.9431, 'Recall': 0.9409, 'F1-Score': 0.9404, 'Training Error': 0.0278, 'Validation Error': 0.0591}
     nn_hyperparameter_graph_title = "NN Hyperparameters Change"
     
+    # old lr hyperparameter metric scores
     lr_old_hyperparameters = {'Accuracy': 0.7872, 'Precision': 0.7933, 'Recall': 0.7872, 'F1-Score': 0.7741, 'Training Error': 0.1872, 'Validation Error': 0.2128}
+    # new lr hyperparameter metric scores
     lr_new_hyperparameters = {'Accuracy': 0.8652, 'Precision': 0.8738, 'Recall': 0.8652, 'F1-Score': 0.8609, 'Training Error': 0.1001, 'Validation Error': 0.1348}
     lr_hyperparameter_graph_title = "LR Hyperparameters Change"
     
     global SHOW_GRAPHS
     if (SHOW_GRAPHS):
-        plot_compare_metrics(svm_hyperparameter_graph_title, svm_old_hyperparameters, svm_new_hyperparameters)
-        plot_compare_metrics(nn_hyperparameter_graph_title, nn_old_hyperparameters, nn_new_hyperparameters)
-        plot_compare_metrics(lr_hyperparameter_graph_title, lr_old_hyperparameters, lr_new_hyperparameters)
+        plot_compare_metrics(svm_hyperparameter_graph_title, svm_old_hyperparameters, svm_new_hyperparameters)      # compare old vs new hyperparameter scores for svm
+        plot_compare_metrics(nn_hyperparameter_graph_title, nn_old_hyperparameters, nn_new_hyperparameters)         # compare old vs new hyperparameter scores for nn
+        plot_compare_metrics(lr_hyperparameter_graph_title, lr_old_hyperparameters, lr_new_hyperparameters)         # compare old vs new hyperparameter scores for lr
 
         for name, model in models.items():
-            plot_confusion_matrix(test_labels_processed,model_test_predictions[name], np.unique(test_labels_processed),name)
+            plot_confusion_matrix(test_labels_processed,model_test_predictions[name], np.unique(test_labels_processed),name)    # plot heatmap confusion matrix for all models
         
+        for name, model in models.items():
+            print(f"\nMisclassified Indices for {name}:")
+            misclassified_indices = get_misclassified_indices(test_labels_processed, model_test_predictions[name])    # print all misclassified samples for all models
+            print(misclassified_indices)  
+        
+        print('\n' + '=' * 60 + '\n')
+    
+    # all misclassified by all 3 models: 51, 77, 146, 160, 250, 270, 411, 420    
+    get_predictied_sample(77, test_features_processed, test_labels_processed, models)   # print predictions for each respective model on an individual sample
+
+
 if __name__ == '__main__':
     np.random.seed(42)
     main()
