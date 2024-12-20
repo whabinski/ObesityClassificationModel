@@ -14,7 +14,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from training import LogisticRegression, NeuralNetwork, SupportVectorMachine, SVM
 from sklearn.svm import SVC
 
-SHOW_GRAPHS = False
+SHOW_GRAPHS = True
 
 # funtion to evaluate performance of models using basic metrics; accuracy, precision, recall, f1, and confusion matrix
 def evaluate_metrics(test_labels, test_predictions):
@@ -115,7 +115,11 @@ def get_predictied_sample(sample_index, test_features_processed, test_labels_pro
     for name, model in models.items():                  # iterate through all models
         prediction = model.predict(sample_features)     # predict the sample
         sample_predictions[name] = prediction           # store to dictionary
-        print(f"Model: {name}, Predicted Label: {prediction[0]}, True Label: {true_label}")     # print comparison
+
+        predicted = f'Predicted Label: {prediction[0]}'
+        true = f'True Label: {true_label}'
+
+        print(f"Model: {name:25} {predicted:20} {true}")     # print comparison
     
 
 def load_models():
@@ -204,15 +208,37 @@ def main():
         for name, model in models.items():
             plot_confusion_matrix(test_labels_processed,model_test_predictions[name], np.unique(test_labels_processed),name)    # plot heatmap confusion matrix for all models
         
+        # Find indexes that is  missclassified by each model
+        missclassifiedSet = None
+
         for name, model in models.items():
             print(f"\nMisclassified Indices for {name}:")
             misclassified_indices = get_misclassified_indices(test_labels_processed, model_test_predictions[name])    # print all misclassified samples for all models
-            print(misclassified_indices)  
+            print(f'{misclassified_indices} ({len(misclassified_indices)})')
+
+            # Set
+            misclassified_indices = set(misclassified_indices)
+
+            #Update Initially
+            if (missclassifiedSet is None):
+                missclassifiedSet = misclassified_indices
+            missclassifiedSet = missclassifiedSet.intersection(misclassified_indices)
         
         print('\n' + '=' * 60 + '\n')
+        print(f'{len(missclassifiedSet)} Points Missclassified by all Models:\n', missclassifiedSet)
+        print('\n' + '=' * 60 + '\n')
+
+        print('Example Missclassified: ')
+        for index in missclassifiedSet:
+            print(index)
+            get_predictied_sample(index, test_features_processed, test_labels_processed, models)   # print predictions for each respective model on an individual sample
+
+        print('\n' + '=' * 60 + '\n')
     
+
+
     # all misclassified by all 3 models: 51, 77, 146, 160, 250, 270, 411, 420    
-    get_predictied_sample(77, test_features_processed, test_labels_processed, models)   # print predictions for each respective model on an individual sample
+    get_predictied_sample(160, test_features_processed, test_labels_processed, models)   # print predictions for each respective model on an individual sample
 
 
 if __name__ == '__main__':
