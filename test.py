@@ -83,6 +83,7 @@ def load_models():
     }
 
 def main():
+    np.random.seed(42)
     
     # We have saved the pickle files in our own folder within the file structure so there is no need for you to move pickle files into file structure
     models = load_models()
