@@ -137,13 +137,13 @@ def main():
 
     print('\n' + '=' * 60 + '\n')
     
-    svm_old_hyperparameters = {'Accuracy': 0.9504, 'Precision': 0.9538, 'Recall': 0.9504, 'F1-Score': 0.9498, 'Training Error': 0.0113, 'Validation Error': 0.0496}
+    svm_old_hyperparameters = {'Accuracy': 0.9385, 'Precision': 0.9420, 'Recall': 0.9385, 'F1-Score': 0.9376, 'Training Error': 0.0355, 'Validation Error': 0.0615}
     svm_new_hyperparameters = {'Accuracy': 0.9504, 'Precision': 0.9538, 'Recall': 0.9504, 'F1-Score': 0.9498, 'Training Error': 0.0113, 'Validation Error': 0.0496}
     
     nn_old_hyperparameters = {'Accuracy': 0.9149, 'Precision': 0.9184, 'Recall': 0.9149, 'F1-Score': 0.9136, 'Training Error': 0.0456, 'Validation Error': 0.0851}
     nn_new_hyperparameters = {'Accuracy': 0.9149, 'Precision': 0.9184, 'Recall': 0.9149, 'F1-Score': 0.9136, 'Training Error': 0.0456, 'Validation Error': 0.0851}
     
-    lr_old_hyperparameters = {'Accuracy': 0.8652, 'Precision': 0.8738, 'Recall': 0.8652, 'F1-Score': 0.8609, 'Training Error': 0.0995, 'Validation Error': 0.1348}
+    lr_old_hyperparameters = {'Accuracy': 0.7872, 'Precision': 0.7956, 'Recall': 0.7872, 'F1-Score': 0.7742, 'Training Error': 0.1878, 'Validation Error': 0.2128}
     lr_new_hyperparameters = {'Accuracy': 0.8652, 'Precision': 0.8738, 'Recall': 0.8652, 'F1-Score': 0.8609, 'Training Error': 0.0995, 'Validation Error': 0.1348}
 
     plot_compare_metrics("SVM Hyperparameters Change", svm_old_hyperparameters, svm_new_hyperparameters)
