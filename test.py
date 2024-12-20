@@ -120,28 +120,48 @@ def get_predictied_sample(sample_index, test_features_processed, test_labels_pro
         true = f'True Label: {true_label}'
 
         print(f"Model: {name:25} {predicted:20} {true}")     # print comparison
-    
-def misclassified_by_all_models(models, model_test_predictions, test_labels_processed, test_features_processed):
-    # Find indexes that is  missclassified by each model
-        missclassifiedSet = None
+
+# function to find all misclassified predictions by all models    
+def misclassified_by_all_models(models, model_test_predictions, test_labels_processed):
+        missclassified = None
 
         for name, model in models.items():
             print(f"\nMisclassified Indices for {name}:")
-            misclassified_indices = get_misclassified_indices(test_labels_processed, model_test_predictions[name])    # print all misclassified samples for all models
+            misclassified_indices = get_misclassified_indices(test_labels_processed, model_test_predictions[name])
             print(f'{misclassified_indices} ({len(misclassified_indices)})')
 
             # Set
             misclassified_indices = set(misclassified_indices)
 
             #Update Initially
-            if (missclassifiedSet is None):
-                missclassifiedSet = misclassified_indices
-            missclassifiedSet = missclassifiedSet.intersection(misclassified_indices)
+            if (missclassified is None):
+                missclassified = misclassified_indices
+            missclassified = missclassified.intersection(misclassified_indices)
         
         print('\n' + '=' * 60 + '\n')
-        print(f'{len(missclassifiedSet)} Points Missclassified by all Models:\n', missclassifiedSet)
+        print(f'{len(missclassified)} Points Missclassified by all Models:\n', missclassified)
         print('\n' + '=' * 60 + '\n')
 
+# function to find all correctly classified predictions by all models    
+def correctly_classified_by_all_models(models, model_test_predictions, test_labels_processed):
+        correctly_classified = None
+
+        for name, model in models.items():
+            print(f"\nMisclassified Indices for {name}:")
+            correctly_classified_indices = get_correctly_classified_indices(test_labels_processed, model_test_predictions[name])
+            print(f'{correctly_classified_indices} ({len(correctly_classified_indices)})')
+
+            # Set
+            correctly_classified_indices = set(correctly_classified_indices)
+
+            #Update Initially
+            if (correctly_classified is None):
+                correctly_classified = correctly_classified_indices
+            correctly_classified = correctly_classified.intersection(correctly_classified_indices)
+        
+        print('\n' + '=' * 60 + '\n')
+        print(f'{len(correctly_classified)} Points Missclassified by all Models:\n', correctly_classified)
+        print('\n' + '=' * 60 + '\n')
 
 def load_models():
     
@@ -230,7 +250,8 @@ def main():
             plot_confusion_matrix(test_labels_processed,model_test_predictions[name], np.unique(test_labels_processed),name)    # plot heatmap confusion matrix for all models
         
         print('\n' + '=' * 60 + '\n')
-        misclassified_by_all_models(models, model_test_predictions, test_labels_processed, test_features_processed)
+        misclassified_by_all_models(models, model_test_predictions, test_labels_processed)
+        correctly_classified_by_all_models(models, model_test_predictions, test_labels_processed)
     
     # all misclassified by all 3 models: 51, 77, 144, 146, 160, 161, 244, 250, 270, 377, 411, 420    
     #get_predictied_sample(51, test_features_processed, test_labels_processed, models)   # print predictions for each respective model on an individual sample
