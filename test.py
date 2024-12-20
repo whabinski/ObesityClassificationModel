@@ -235,10 +235,8 @@ def main():
 
         print('\n' + '=' * 60 + '\n')
     
-
-
     # all misclassified by all 3 models: 51, 77, 146, 160, 250, 270, 411, 420    
-    get_predictied_sample(160, test_features_processed, test_labels_processed, models)   # print predictions for each respective model on an individual sample
+    # get_predictied_sample(160, test_features_processed, test_labels_processed, models)   # print predictions for each respective model on an individual sample
 
 
 if __name__ == '__main__':

@@ -106,7 +106,7 @@ def categorical_correlation_analysis(features, labels, threshold = 0.05):
 # function to perform correlation analysis and return feature seletion
 def feature_selection(categorical_columns, numerical_columns, train_features, test_features, train_labels):
     
-    selected_numerical_features = numerical_correlation_analysis(train_features[numerical_columns], train_labels, threshold=0.2)            # correlation analysis on numerical features
+    selected_numerical_features = numerical_correlation_analysis(train_features[numerical_columns], train_labels, threshold=0.25)            # correlation analysis on numerical features
     
     selected_categorical_features = categorical_correlation_analysis(train_features[categorical_columns], train_labels, threshold=0.1)     # correlation analysis on numerical features
     
@@ -153,7 +153,6 @@ def ordinalize(train_labels, test_labels):
         5: 2,
         6: 3,
     }
-
    
     # Lookup to transform the alphabetical order (from label_encoder) to the ordinal 
     train = np.array([lookup.get(x, x) for x in train])
@@ -199,7 +198,7 @@ def preprocess_features(train_features, test_features, train_labels, test_labels
 
     for label in range(7):
         x = labelCount[label] / len(train_labels_processed)
-        print(f'Label {label}: {x*100:.3f}% of training data points')
+        #print(f'Label {label}: {x*100:.3f}% of training data points')
 
     # Save to Numpy Files
     np.save('./Data/train_features.npy', train_features_processed);
