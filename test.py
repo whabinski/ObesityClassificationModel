@@ -14,7 +14,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from training import LogisticRegression, NeuralNetwork, SupportVectorMachine, SVM
 from sklearn.svm import SVC
 
-SHOW_GRAPHS = True
+SHOW_GRAPHS = False
 
 # funtion to evaluate performance of models using basic metrics; accuracy, precision, recall, f1, and confusion matrix
 def evaluate_metrics(test_labels, test_predictions):
@@ -142,11 +142,6 @@ def misclassified_by_all_models(models, model_test_predictions, test_labels_proc
         print(f'{len(missclassifiedSet)} Points Missclassified by all Models:\n', missclassifiedSet)
         print('\n' + '=' * 60 + '\n')
 
-        print('Example Missclassified: ')
-        for index in missclassifiedSet:
-            print(index)
-            get_predictied_sample(index, test_features_processed, test_labels_processed, models)   # print predictions for each respective model on an individual sample
-
 
 def load_models():
     
@@ -235,11 +230,10 @@ def main():
             plot_confusion_matrix(test_labels_processed,model_test_predictions[name], np.unique(test_labels_processed),name)    # plot heatmap confusion matrix for all models
         
         print('\n' + '=' * 60 + '\n')
-        #misclassified_by_all_models(models, model_test_predictions, test_labels_processed, test_features_processed)
+        misclassified_by_all_models(models, model_test_predictions, test_labels_processed, test_features_processed)
     
-    # all misclassified by all 3 models: 51, 77, 146, 160, 250, 270, 411, 420    
-    # get_predictied_sample(160, test_features_processed, test_labels_processed, models)   # print predictions for each respective model on an individual sample
-
+    # all misclassified by all 3 models: 51, 77, 144, 146, 160, 161, 244, 250, 270, 377, 411, 420    
+    #get_predictied_sample(51, test_features_processed, test_labels_processed, models)   # print predictions for each respective model on an individual sample
 
 if __name__ == '__main__':
     np.random.seed(42)
