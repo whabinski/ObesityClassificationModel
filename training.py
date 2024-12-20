@@ -106,9 +106,9 @@ def categorical_correlation_analysis(features, labels, threshold = 0.05):
 # function to perform correlation analysis and return feature seletion
 def feature_selection(categorical_columns, numerical_columns, train_features, test_features, train_labels):
     
-    selected_numerical_features = numerical_correlation_analysis(train_features[numerical_columns], train_labels, threshold=0.1)            # correlation analysis on numerical features
+    selected_numerical_features = numerical_correlation_analysis(train_features[numerical_columns], train_labels, threshold=0.2)            # correlation analysis on numerical features
     
-    selected_categorical_features = categorical_correlation_analysis(train_features[categorical_columns], train_labels, threshold=0.05)     # correlation analysis on numerical features
+    selected_categorical_features = categorical_correlation_analysis(train_features[categorical_columns], train_labels, threshold=0.1)     # correlation analysis on numerical features
     
     return selected_categorical_features, selected_numerical_features   # return feature columns
 

@@ -6,6 +6,7 @@
 # - evaluate_bias_variance: evaluates bias and variance and displays training and validation error
 
 import matplotlib.pyplot as plt
+import seaborn as sns
 import numpy as np
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
@@ -13,7 +14,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from training import LogisticRegression, NeuralNetwork, SupportVectorMachine, SVM
 from sklearn.svm import SVC
 
-SHOW_GRAPHS = True
+SHOW_GRAPHS = False
 
 # funtion to evaluate performance of models using basic metrics; accuracy, precision, recall, f1, and confusion matrix
 def evaluate_metrics(test_labels, test_predictions):
@@ -79,6 +80,20 @@ def plot_compare_metrics(title, metrics_model_old, metrics_model_new, old_name="
     
     plt.tight_layout()          # tight layout
     plt.show()                  # Show the plot
+
+# function to produce heatmap for confusion matrix
+def plot_confusion_matrix(true_labels, predicted_labels, class_names, model):
+    cm = confusion_matrix(true_labels, predicted_labels)    # create confusion matrix
+    
+    plt.figure(figsize=(8, 6))                              # make plot
+    sns.heatmap(cm, annot=True, fmt=".2f", cmap="coolwarm", xticklabels=class_names, yticklabels=class_names)       # create heatmap using seaborn and confusion matrix
+    
+    plt.title(f"Confusion Matrix for {model}")      # title for plot
+    plt.xlabel("Predicted Labels")                  # x axis title
+    plt.ylabel("True Labels")                       # y axis title
+    
+    plt.tight_layout()              # tight layout
+    plt.show()                      # show plot
 
 def load_models():
     
@@ -150,13 +165,16 @@ def main():
     lr_old_hyperparameters = {'Accuracy': 0.7872, 'Precision': 0.7933, 'Recall': 0.7872, 'F1-Score': 0.7741, 'Training Error': 0.1872, 'Validation Error': 0.2128}
     lr_new_hyperparameters = {'Accuracy': 0.8652, 'Precision': 0.8738, 'Recall': 0.8652, 'F1-Score': 0.8609, 'Training Error': 0.1001, 'Validation Error': 0.1348}
     lr_hyperparameter_graph_title = "LR Hyperparameters Change"
-
+    
     global SHOW_GRAPHS
     if (SHOW_GRAPHS):
         plot_compare_metrics(svm_hyperparameter_graph_title, svm_old_hyperparameters, svm_new_hyperparameters)
         plot_compare_metrics(nn_hyperparameter_graph_title, nn_old_hyperparameters, nn_new_hyperparameters)
         plot_compare_metrics(lr_hyperparameter_graph_title, lr_old_hyperparameters, lr_new_hyperparameters)
 
+        for name, model in models.items():
+            plot_confusion_matrix(test_labels_processed,model_test_predictions[name], np.unique(test_labels_processed),name)
+        
 if __name__ == '__main__':
     np.random.seed(42)
     main()
