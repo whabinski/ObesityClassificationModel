@@ -139,13 +139,33 @@ def undersample_classes(features, labels):
 
 #-------- Preprocessing  ----------------------------------------------------------------------------------------
 
-# function to preprocess train and test sets
-def preprocess_features(train_features, test_features, train_labels, test_labels):
+def ordinalize(train_labels, test_labels):
     
     # process labels to numeric format using label encoder
     label_encoder = LabelEncoder()                                                                  # initialize label encoder
-    train_labels_processed = label_encoder.fit_transform(train_labels)                              # fit and apply label encoder to training set
-    test_labels_processed = label_encoder.transform(test_labels)                                    # apply label encoder to test set
+    train = label_encoder.fit_transform(train_labels)                              # fit and apply label encoder to training set
+    test = label_encoder.transform(test_labels)
+
+    lookup = {
+        2: 4,
+        3: 5,
+        4: 6,
+        5: 2,
+        6: 3,
+    }
+
+   
+    # Lookup to transform the alphabetical order (from label_encoder) to the ordinal 
+    train = np.array([lookup.get(x, x) for x in train])
+    test = np.array([lookup.get(x, x) for x in test])
+
+    return train, test
+
+# function to preprocess train and test sets
+def preprocess_features(train_features, test_features, train_labels, test_labels):
+    
+    # process labels to ordinal numeric format using label encoder                                                                  # initialize label encoder
+    train_labels_processed, test_labels_processed = ordinalize(train_labels, test_labels)                                 # apply label encoder to test set
     
     categorical_columns = train_features.select_dtypes(include=['object', 'category']).columns.tolist()     # dynamically define categorical columns to be processed
     numerical_columns = train_features.select_dtypes(include=['number']).columns.tolist()                   # dynamically define numerical columns to be processed
@@ -172,6 +192,15 @@ def preprocess_features(train_features, test_features, train_labels, test_labels
     train_features_processed = np.hstack((train_categorical_encoded, train_numerical_scaled))       # combine processed categorical and numerical train set columns
     test_features_processed = np.hstack((test_categorical_encoded, test_numerical_scaled))          # combine processed categorical and numerical test set columns
     
+    # Display the number of relative amounts
+    labelCount = {}
+    for label in train_labels_processed:
+        labelCount[label] = labelCount.get(label, 0) + 1
+
+    for label in range(7):
+        x = labelCount[label] / len(train_labels_processed)
+        print(f'Label {label}: {x*100:.3f}% of training data points')
+
     # Save to Numpy Files
     np.save('./Data/train_features.npy', train_features_processed);
     np.save('./Data/test_features.npy', test_features_processed);
