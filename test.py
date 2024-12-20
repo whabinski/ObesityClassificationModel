@@ -13,6 +13,8 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from training import LogisticRegression, NeuralNetwork, SupportVectorMachine, SVM
 from sklearn.svm import SVC
 
+SHOW_GRAPHS = True
+
 # funtion to evaluate performance of models using basic metrics; accuracy, precision, recall, f1, and confusion matrix
 def evaluate_metrics(test_labels, test_predictions):
     accuracy = accuracy_score(test_labels, test_predictions)                                                # calucalte accuracy using sklearns accuracy method: proportion of correctly classified samples
@@ -139,14 +141,21 @@ def main():
     
     svm_old_hyperparameters = {'Accuracy': 0.9385, 'Precision': 0.9420, 'Recall': 0.9385, 'F1-Score': 0.9376, 'Training Error': 0.0355, 'Validation Error': 0.0615}
     svm_new_hyperparameters = {'Accuracy': 0.9504, 'Precision': 0.9538, 'Recall': 0.9504, 'F1-Score': 0.9498, 'Training Error': 0.0113, 'Validation Error': 0.0496}
+    svm_hyperparameter_graph_title = "SVM Hyperparameters Change"
     
     nn_old_hyperparameters = {'Accuracy': 0.9267, 'Precision': 0.9378, 'Recall': 0.9267, 'F1-Score': 0.9251, 'Training Error': 0.0249, 'Validation Error': 0.0733}
-    nn_new_hyperparameters = {'Accuracy': 0.9149, 'Precision': 0.9184, 'Recall': 0.9149, 'F1-Score': 0.9136, 'Training Error': 0.0456, 'Validation Error': 0.0851}
+    nn_new_hyperparameters = {'Accuracy': 0.9409, 'Precision': 0.9431, 'Recall': 0.9409, 'F1-Score': 0.9404, 'Training Error': 0.0278, 'Validation Error': 0.0591}
+    nn_hyperparameter_graph_title = "NN Hyperparameters Change"
     
     lr_old_hyperparameters = {'Accuracy': 0.7872, 'Precision': 0.7933, 'Recall': 0.7872, 'F1-Score': 0.7741, 'Training Error': 0.1872, 'Validation Error': 0.2128}
-    lr_new_hyperparameters = {'Accuracy': 0.8652, 'Precision': 0.8738, 'Recall': 0.8652, 'F1-Score': 0.8609, 'Training Error': 0.0995, 'Validation Error': 0.1348}
+    lr_new_hyperparameters = {'Accuracy': 0.8652, 'Precision': 0.8738, 'Recall': 0.8652, 'F1-Score': 0.8609, 'Training Error': 0.1001, 'Validation Error': 0.1348}
+    lr_hyperparameter_graph_title = "LR Hyperparameters Change"
 
-    plot_compare_metrics("SVM Hyperparameters Change", svm_old_hyperparameters, svm_new_hyperparameters)
+    global SHOW_GRAPHS
+    if (SHOW_GRAPHS):
+        plot_compare_metrics(svm_hyperparameter_graph_title, svm_old_hyperparameters, svm_new_hyperparameters)
+        plot_compare_metrics(nn_hyperparameter_graph_title, nn_old_hyperparameters, nn_new_hyperparameters)
+        plot_compare_metrics(lr_hyperparameter_graph_title, lr_old_hyperparameters, lr_new_hyperparameters)
 
 if __name__ == '__main__':
     np.random.seed(42)
