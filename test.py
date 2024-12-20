@@ -149,4 +149,5 @@ def main():
     plot_compare_metrics("SVM Hyperparameters Change", svm_old_hyperparameters, svm_new_hyperparameters)
 
 if __name__ == '__main__':
+    np.random.seed(42)
     main()
