@@ -201,6 +201,21 @@ def load_models():
         'Logistic Regression': lr
     }
 
+# Checks the distance between predicted lables and true labels, and creates an accuracy score
+# (Worse predictions are further off)
+def ordinal_accuracy(labels, predictedLabels):
+
+    # Get the difference between predicted lables
+    difference = np.abs(labels - predictedLabels)
+
+    # 0-6 should provide maximum penalty (1)
+    penalty = difference / 6
+
+    # 1 is perfect, 0 is awful prediction
+    scores = 1 - penalty
+    return np.mean(scores)
+
+
 def main():
     
     # We have saved the pickle files in our own folder within the file structure so there is no need for you to move pickle files into file structure
@@ -233,6 +248,8 @@ def main():
 
     print('\n' + '=' * 60 + '\n')
     
+    # From Milestone II
+
     # old svm hyperparameter metric scores
     svm_old_hyperparameters = {'Accuracy': 0.9385, 'Precision': 0.9420, 'Recall': 0.9385, 'F1-Score': 0.9376, 'Training Error': 0.0355, 'Validation Error': 0.0615}
     # new svm hyperparameter metric scores
@@ -266,6 +283,13 @@ def main():
     
     #All misclassified by all 3 models: 51, 77, 144, 146, 160, 161, 244, 250, 270, 377, 411, 420    
     #get_predictied_sample(51, test_features_processed, test_labels_processed, models)   # print predictions for each respective model on an individual sample
+
+    # Perform Ordinal Accuracy
+    for name, model in models.items():
+        acc = ordinal_accuracy(test_labels_processed, model_test_predictions[name])
+        print(f'Ordinal Accuracy for {name}: {acc:.4f}')
+    print('\n' + '=' * 60 + '\n')
+
 
 if __name__ == '__main__':
     np.random.seed(42)
