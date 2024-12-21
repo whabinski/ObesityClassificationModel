@@ -24,6 +24,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from training import LogisticRegression, NeuralNetwork, SupportVectorMachine, SVM
 from sklearn.svm import SVC
 
+# Turn ON to regenerate graphs
 SHOW_GRAPHS = False
 
 # funtion to evaluate performance of models using basic metrics; accuracy, precision, recall, f1, and confusion matrix

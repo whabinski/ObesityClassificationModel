@@ -21,7 +21,6 @@
 # savePickle: saves every model into its own pickle file.
 # main: runs the training 'pipeline'
 
-
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -41,6 +40,9 @@ from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 from torch.utils.data import Dataset, DataLoader
 from sklearn.svm import SVC
+
+# Turn ON to regenerate graphs
+SHOW_GRAPHS = False
 
 #-------- Load Data ---------------------------------------------------------------------------------------------
 # Load and Split Data Scripts
@@ -74,8 +76,6 @@ def split_data(features, labels, test_size):
 
 #-------- Feature engineering  ----------------------------------------------------------------------------------
 #  correlation analysis, feature augmentation, feature selection
-
-SHOW_GRAPHS = False
 
 # funciton to calculate bmi and add as new column to data
 def add_bmi_column(data):
