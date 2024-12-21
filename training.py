@@ -456,8 +456,7 @@ class NeuralNetwork():
 
                 #  If validation loss has gotten significantly worse
                 if (curr_mean - prev_mean) > self.ejectDifference:
-                    print(f'Early Stopping due to regression at epoch={epoch}/{self.epochs} ')
-                        #f'(mean valid loss went from {prev_mean:.5f} to {curr_mean:.5f})')
+                    # print(f'Early Stopping due to regression at epoch={epoch}/{self.epochs} ')
                     break
 
                 #If improvement is less than a small threshold
@@ -469,8 +468,7 @@ class NeuralNetwork():
 
                 # If we've stagnated for multiple windows in a row, stop
                 if deminisingEpochs >= self.deminishingReturnsCount:
-                    print(f'Early Stopping due to stagnation at epoch={epoch}/{self.epochs} '
-                        f'(mean valid loss plateaued at ~{curr_mean:.5f})')
+                    # print(f'Early Stopping due to stagnation at epoch={epoch}/{self.epochs} ')
                     break
 
         # print('Finished Training')
@@ -767,7 +765,7 @@ def main():
     # 5. Save to Pickle
     savePickle(models)
 
-    # Evaluate using training data
+    # In Training - Evaluate KFold using training data
     print('\n' + '=' * 60 + '\n')
     print("Beginning K-Fold Cross Validation")
     SHOW_GRAPHS = False

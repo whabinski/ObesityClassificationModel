@@ -253,7 +253,7 @@ def main():
         misclassified_by_all_models(models, model_test_predictions, test_labels_processed)
         correctly_classified_by_all_models(models, model_test_predictions, test_labels_processed)
     
-    # all misclassified by all 3 models: 51, 77, 144, 146, 160, 161, 244, 250, 270, 377, 411, 420    
+    #Aall misclassified by all 3 models: 51, 77, 144, 146, 160, 161, 244, 250, 270, 377, 411, 420    
     #get_predictied_sample(51, test_features_processed, test_labels_processed, models)   # print predictions for each respective model on an individual sample
 
 if __name__ == '__main__':
