@@ -1,3 +1,27 @@
+#
+# Functions
+# load_data: loads in the data from the raw .csv file
+# feature_engineering: engineer new features to the dataset
+# create_feature_and_target: seperate features and labels
+# sample_technique: samples labels
+# split_data: splits the data into train and test sets
+# add_bmi_column: adds a column (BMI) from weight and height
+# numerical_correlation_analysis: funciton to perform correlation analysis on numerical features
+# categorical_correlation_analysis: funciton to perform correlation analysis on categorical features using mutual information
+# feature_selection: selects the best features using a threshold
+# undersample_classes:  to create class sizes equal to the smallest class
+# ordinalize: takes the label classes and puts them into the correct order (0, 1, 2 ...)
+# preprocess_features: preprocesses input features
+# plot_metrics: plot some metric over epochs, comes with defined table title.
+# plot_losses: plot the training and validation losses of each model while training
+# trainModels: trains the newly initialized models 
+# evaluate_kfold: perform k fold cross validation for all models
+# load_and_split: unction to load data, seperate features and labels, and split into training and testing sets
+# eval_kfold: perform k-fold evaluation for some model
+# savePickle: saves every model into its own pickle file.
+# main: runs the training 'pipeline'
+
+
 import pandas as pd
 import numpy as np
 import seaborn as sns

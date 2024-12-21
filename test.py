@@ -4,6 +4,16 @@
 # Functions:
 # - evaluate_metrics: computes accuracy, precision, recall, f1 score, and confusion matrix given test labels and predictions
 # - evaluate_bias_variance: evaluates bias and variance and displays training and validation error
+# - eval_metrics: wrapper of evaluate_metrics, runs it for each model
+# - plot_compare_metrics: plots the comparison metrics (m2 and m3 params) for a specific model
+# - plot_confusion_matrix: plots the confusion matrix for a model
+# - get_misclassified_indices: gets the indeces of test points that are incorrectly classified by some model
+# - get_correctly_classified_indices:   gets the indeces of test points that are correctly classified by some model
+# - get_predictied_sample: return predictions made by each model for a respective sample number
+# - misclassified_by_all_models: gets the index of every test point which is never correctly classified by any model.
+# - correctly_classified_by_all_models: gets the index of every test point that is correctly classified by all 3 models.
+# - load_models: loads the models from the .pkl files
+# - main: runs the evalulation 'pipeline'
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -253,7 +263,7 @@ def main():
         misclassified_by_all_models(models, model_test_predictions, test_labels_processed)
         correctly_classified_by_all_models(models, model_test_predictions, test_labels_processed)
     
-    #Aall misclassified by all 3 models: 51, 77, 144, 146, 160, 161, 244, 250, 270, 377, 411, 420    
+    #All misclassified by all 3 models: 51, 77, 144, 146, 160, 161, 244, 250, 270, 377, 411, 420    
     #get_predictied_sample(51, test_features_processed, test_labels_processed, models)   # print predictions for each respective model on an individual sample
 
 if __name__ == '__main__':
